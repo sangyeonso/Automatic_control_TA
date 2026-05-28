@@ -943,6 +943,104 @@ git push origin main</pre>
         </li>
       </ol>
 
+      <!-- Doc map -->
+      <div class="part-header" style="margin-top: 44px;">
+        <span class="part-tag">Doc Map</span>
+        <h3 class="part-title">문서 지도 <em>— .md 파일이 어디에 있는가</em></h3>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">기말 프로젝트 .md 파일 트리</h3>
+          <div class="card-meta"><span>학생 fork 기준</span><span>⭐ = 핵심</span></div>
+        </div>
+<pre class="code" style="font-size: 12.5px;">final-project-&lt;학번&gt;/
+│
+├── README.md                       <span class="k">⭐</span>  30초 onboarding · 가장 먼저 읽기
+│
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   └── question.md             <span class="m">·</span>   질문 issue 양식
+│   └── PULL_REQUEST_TEMPLATE.md    <span class="m">·</span>   PR 제출 양식
+│
+└── icc-project/
+    │
+    ├── ASSIGNMENT.md               <span class="k">⭐</span>  과제 명세 + 채점 기준 (70+30+10)
+    ├── GETTING_STARTED.md          <span class="k">⭐</span>  환경 세팅 5분 가이드
+    ├── TROUBLESHOOTING.md          <span class="m">·</span>   환경 FAQ + 자주 묻는 문제
+    │
+    ├── docs/
+    │   ├── icc_test_protocol.md          <span class="m">·</span>  13종 시나리오 ISO/FMVSS 표준
+    │   ├── model_calibration_report.md   <span class="m">·</span>  plant 신뢰성 (vs CarMaker)
+    │   ├── plants/
+    │   │   └── plant_bicycle.md     <span class="k">⭐</span>  bicycle model 수식 + 가정
+    │   └── report_template.md       <span class="k">⭐</span>  보고서 8-12p 작성 template
+    │
+    ├── prompt/
+    │   └── README.md               <span class="m">·</span>   AI 도구 활용 안내 (선택)
+    │
+    └── scripts/
+        ├── control/
+        │   └── starter/
+        │       └── README.md       <span class="m">·</span>   starter 템플릿 사용법
+        └── scenarios/
+            └── README.md           <span class="m">·</span>   시나리오 파일 구조 안내</pre>
+
+        <p style="margin-top: 18px;">읽는 순서:</p>
+        <table class="data">
+          <thead>
+            <tr><th>시점</th><th>파일</th><th>목적</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="muted">첫날</td>
+              <td class="k">README.md</td>
+              <td>프로젝트가 뭔지 30 초 안에 파악</td>
+            </tr>
+            <tr>
+              <td class="muted">첫날</td>
+              <td class="k">GETTING_STARTED.md</td>
+              <td>MATLAB 환경 세팅, baseline 실행</td>
+            </tr>
+            <tr>
+              <td class="muted">첫날</td>
+              <td class="k">ASSIGNMENT.md</td>
+              <td>무엇을 만들고 어떻게 채점되는지</td>
+            </tr>
+            <tr>
+              <td class="muted">막힐 때</td>
+              <td class="k">TROUBLESHOOTING.md</td>
+              <td>환경 오류 검색</td>
+            </tr>
+            <tr>
+              <td class="muted">설계 시작</td>
+              <td class="k">docs/plants/plant_bicycle.md</td>
+              <td>yawRateRef · bicycle 수식 이해</td>
+            </tr>
+            <tr>
+              <td class="muted">설계 시작</td>
+              <td class="k">scripts/control/starter/README.md</td>
+              <td>starter 템플릿 사용법</td>
+            </tr>
+            <tr>
+              <td class="muted">시나리오 디테일</td>
+              <td class="k">docs/icc_test_protocol.md</td>
+              <td>각 시나리오 ISO 표준 사양</td>
+            </tr>
+            <tr>
+              <td class="muted">Plant 인용</td>
+              <td class="k">docs/model_calibration_report.md</td>
+              <td>보고서에서 "내 모델은 CarMaker 와 일치" 인용용</td>
+            </tr>
+            <tr>
+              <td class="muted">보고서 작성</td>
+              <td class="k">docs/report_template.md</td>
+              <td>8–12p template 빈칸 채우기</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <div class="problem-divider">end of section 02</div>
     </section>
 
