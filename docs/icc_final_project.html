@@ -761,7 +761,6 @@ mjx-container[display="true"] { margin: 12px 0 !important; }
             <tr><td class="k">D1</td><td>DLC + Brake</td><td><span class="badge hard">HARD</span></td><td class="num green">8 pt</td></tr>
           </tbody>
         </table>
-        <p class="hint">A1·A7 합 30점이 정량의 43%. 시간 더 쓰는 게 효율적.</p>
       </div>
 
       <div class="step">
@@ -875,7 +874,6 @@ cp scripts/control/starter/ctrl_coordinator_starter.m   scripts/control/ctrl_coo
           <li><code class="inline">docs/report.md</code></li>
           <li><code class="inline">config/sim_params.m</code> 중 <code class="inline">CTRL.*</code>, <code class="inline">LIM.*</code>, <code class="inline">SIM.solver</code> 만</li>
         </ul>
-        <p class="hint">위 외 파일 수정 시 채점 무효. 수정 필요 시 GitHub Issue 로 사전 문의.</p>
       </div>
 
       <div class="step">
@@ -908,7 +906,7 @@ git push origin main</pre>
           <li>SHA256 무결성 검증 <code class="inline">ctrl_signature == 실제 파일 hash</code></li>
           <li>시나리오별 ✅/❌ 표시 + 점수</li>
         </ul>
-        <p class="hint">grade_report.json 만 수동 편집해 점수 올리려는 시도는 자동 차단 + 학칙 위반.</p>
+        <p class="hint">grade_report.json 만 수동 편집해 점수 올리려는 시도는 자동 차단.</p>
       </div>
 
       <!-- Pitfalls -->
@@ -1067,9 +1065,6 @@ git push origin main</pre>
           <li><strong>저크 제한</strong>: 힘 변화율 $|dF_x/dt|$ 을 <code class="inline">LIM.MAX_JERK</code> 안으로.</li>
           <li><strong>가속 한계</strong>: $|F_x| \le m \cdot a_{x,\max}$.</li>
         </ul>
-        <p class="hint">학생이 가장 많이 틀리는 부분 — ABS 를 <code class="inline">if |κ|>0.12 then brake off</code> 같은 bang-bang 으로 짜면 휠이 잠겼다 풀렸다 진동 (absSlipRMS 폭주). 반드시 <strong>slip ratio 추종 PI</strong>:
-          $$ T_b \;=\; T_{b,0} \;+\; K_p^{\!ABS}\!\bigl(\kappa - \kappa_{\text{ref}}\bigr) \;+\; K_i^{\!ABS}\!\!\int\!\bigl(\kappa - \kappa_{\text{ref}}\bigr) dt $$
-        </p>
       </div>
 
       <div class="step">
@@ -1089,7 +1084,6 @@ git push origin main</pre>
           <li><strong>안티롤 보상</strong>: 횡가속도 $a_y$, roll 각도 $\phi$ 에 비례해 좌우 휠 감쇠 차등 (외측 ↑, 내측 ↓).</li>
           <li><strong>범위 제한</strong>: <code class="inline">CTRL.VER.cMin ≤ c ≤ CTRL.VER.cMax</code>.</li>
         </ul>
-        <p class="hint">정량 70점에는 거의 영향 없음 (가점 +2 만). 시간 부족하면 마지막으로 미루고, 코드는 default 감쇠 유지해도 OK.</p>
       </div>
 
       <div class="step">
@@ -1111,7 +1105,6 @@ git push origin main</pre>
           <li><strong>마찰원 제약</strong>: 종 + 횡 동시 인가 시 $\sqrt{F_x^2 + F_y^2} \le \mu F_z$ 위반 검사, 위반 시 scale down. <strong>가점 +3</strong>.</li>
           <li><strong>WLS allocation</strong>: simple split 대신 weighted least squares 로 4륜 토크 분배 — <strong>가점 +3</strong>.</li>
         </ul>
-        <p class="hint">먼저 simple split 으로 동작 보고, 시간 남으면 마찰원 검사 → WLS 순으로 확장.</p>
       </div>
 
       <div class="problem-divider">end of section 03</div>
