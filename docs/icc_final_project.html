@@ -1404,7 +1404,7 @@ git push origin main</pre>
           </tr>
           <tr>
             <td class="k">A1</td><td>ISO 3888 DLC</td>
-            <td class="k">yawrate, β, LTR, path_dev</td>
+            <td class="k">β, LTR, path_dev</td>
             <td>β ≤ 3°, LTR ≤ 0.6, dev ≤ 0.7m</td>
             <td class="num green">15</td>
           </tr>
@@ -1416,7 +1416,7 @@ git push origin main</pre>
           </tr>
           <tr>
             <td class="k">A7</td><td>Brake-in-Turn</td>
-            <td class="k">β, LTR, (tire_util 가점)</td>
+            <td class="k">β, LTR</td>
             <td>β ≤ 5°, LTR ≤ 0.7</td>
             <td class="num green">15</td>
           </tr>
@@ -1433,21 +1433,47 @@ git push origin main</pre>
             <td class="num green">8</td>
           </tr>
           <tr>
-            <td class="k amber">A5</td><td>FMVSS 126</td>
-            <td class="k">sine_with_dwell</td>
-            <td>R1.0 ≤ 0.35, R1.75 ≤ 0.20</td>
+            <td class="k amber">A2 또는 A5</td><td>Severe DLC / FMVSS 126</td>
+            <td class="k">sine_with_dwell (A5)</td>
+            <td>둘 중 하나 통과 — R1.0 ≤ 0.35, R1.75 ≤ 0.20</td>
             <td class="num amber">+3</td>
           </tr>
           <tr>
-            <td class="k amber">C1</td><td>Single Bump</td>
+            <td class="k amber">C1 또는 C2</td><td>Single Bump / Sine Sweep</td>
             <td class="k">susp_travel, ride_iso2631</td>
-            <td>aw_rms 감소율, peak 감소</td>
+            <td>둘 중 하나 — aw_rms 감소율 · peak 감소</td>
             <td class="num amber">+2</td>
           </tr>
+        </tbody>
+      </table>
+
+      <p class="hint" style="margin-top: 18px;"><strong>주의</strong> — A2/A5 는 둘 중 한 시나리오만 통과해도 +3, C1/C2 도 둘 중 한 시나리오만 통과해도 +2. 둘 다 통과해도 점수 두 배 안 됨.</p>
+
+      <div class="part-header" style="margin-top: 36px;">
+        <span class="part-tag" style="background: var(--accent-3);">Bonus</span>
+        <h3 class="part-title">구현 가점 <em>— 시나리오 외 평가</em></h3>
+      </div>
+
+      <table class="data">
+        <thead>
           <tr>
-            <td class="k amber">C2</td><td>Sine Sweep</td>
-            <td class="k">susp_travel, ride_iso2631</td>
-            <td>aw_rms 감소율</td>
+            <th>가점 항목</th>
+            <th>대상 파일</th>
+            <th>판정 기준</th>
+            <th class="num">배점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="k amber">마찰원 + WLS allocation</td>
+            <td class="k">ctrl_coordinator.m</td>
+            <td>√(F<sub>x</sub>² + F<sub>y</sub>²) ≤ μF<sub>z</sub> 검사 + WLS 분배 구현</td>
+            <td class="num amber">+3</td>
+          </tr>
+          <tr>
+            <td class="k amber">gain scheduling / LPV</td>
+            <td class="k">ctrl_lateral.m 등</td>
+            <td>속도 적응 게인 적용 + 효능 입증</td>
             <td class="num amber">+2</td>
           </tr>
         </tbody>
@@ -1456,7 +1482,7 @@ git push origin main</pre>
       <div class="final-answer">
         <div class="tag">합계</div>
         <div class="ans">
-          정량 자동채점 <strong>70 pt</strong> · 가점 합 <strong>+10 pt</strong> · 총합 상한 <strong>100 pt</strong>
+          정량 자동채점 <strong>70 pt</strong> · 가점 합 최대 <strong>+10 pt</strong> · 총합 상한 <strong>100 pt</strong>
         </div>
       </div>
 
