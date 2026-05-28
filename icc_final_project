@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICC Final Project · Tutorial Workbook</title>
+
+<!-- MathJax -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  startup: { typeset: true }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f5f1e8;
+  --bg-card: #faf6ec;
+  --bg-soft: #efe9dc;
+  --bg-side: #ede5d3;
+  --ink: #2a2722;
+  --ink-soft: #5a544a;
+  --ink-muted: #8a8275;
+  --accent: #1f5e6b;
+  --accent-2: #b85042;
+  --accent-3: #c87f3a;
+  --accent-green: #4a7a47;
+  --rule: #d8cfbe;
+  --rule-soft: #e6dfd0;
+  --shadow: 0 1px 0 rgba(42,39,34,.04), 0 8px 24px -12px rgba(42,39,34,.12);
+
+  --font-serif: 'EB Garamond', 'Iowan Old Style', 'Apple Garamond', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --side-w: 280px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(1200px 800px at 80% -10%, rgba(184,80,66,.04), transparent 60%),
+    radial-gradient(900px 700px at -10% 110%, rgba(31,94,107,.05), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============== LAYOUT ============== */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============== SIDEBAR ============== */
+.sidebar {
+  width: var(--side-w);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 56px 28px 40px 36px;
+  background: var(--bg-side);
+  border-right: 1px solid var(--rule);
+}
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+.brand {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+.brand em {
+  display: block;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--accent-2);
+}
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin: 16px 0 0;
+}
+
+.contents-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin: 44px 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.toc-list { list-style: none; margin: 0; padding: 0; }
+.toc-item {
+  padding: 14px 0 16px;
+  border-bottom: 1px dashed var(--rule);
+}
+.toc-item:last-child { border-bottom: none; }
+.toc-item a {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  align-items: baseline;
+}
+.toc-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-2);
+  letter-spacing: .04em;
+}
+.toc-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.toc-sub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-muted);
+  letter-spacing: .02em;
+  line-height: 1.35;
+  font-weight: 400;
+}
+.toc-item.active .toc-title { color: var(--accent); }
+.toc-item.active .toc-num   { color: var(--accent); font-weight: 600; }
+.toc-item:hover .toc-title  { color: var(--accent); }
+
+.side-foot {
+  margin-top: 52px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+/* mobile sidebar */
+.side-toggle {
+  display: none;
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 50;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .15em;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--ink);
+}
+@media (max-width: 880px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    box-shadow: 4px 0 20px -10px rgba(0,0,0,.15);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .side-toggle { display: block; }
+  .main { padding-top: 60px !important; }
+}
+
+/* ============== MAIN ============== */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 64px 56px 120px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+@media (max-width: 1100px) {
+  .main { padding: 64px 32px 120px; }
+}
+
+/* problem section */
+.problem-section { scroll-margin-top: 24px; }
+.problem-section + .problem-section {
+  margin-top: 96px;
+  padding-top: 8px;
+}
+
+.problem-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.problem-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+.problem-title {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  margin: 0 0 4px;
+  line-height: 1.15;
+}
+.problem-sub {
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 17px;
+  margin: 0 0 28px;
+}
+
+/* card (widget) */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+  padding: 32px 36px 28px;
+  margin-bottom: 40px;
+  box-shadow: var(--shadow);
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.card-title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+.card-meta span + span::before {
+  content: " · ";
+  color: var(--ink-muted);
+  margin: 0 6px;
+}
+
+.eq-banner {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule-soft);
+  border-radius: 2px;
+  padding: 18px 22px;
+  margin: 12px 0 24px;
+  text-align: center;
+  font-size: 17px;
+}
+
+/* part header */
+.part-header {
+  margin: 44px 0 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.part-header .part-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--bg-card);
+  background: var(--accent);
+  padding: 6px 12px 5px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.part-header .part-title {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin: 0;
+}
+.part-header .part-title em {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+.section-intro {
+  margin: 28px 0 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.section-intro h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin: 0 0 4px;
+}
+.section-intro p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  font-style: italic;
+}
+
+/* step */
+.step {
+  position: relative;
+  padding: 4px 0 4px 28px;
+  margin: 32px 0;
+  border-left: 2px solid var(--rule);
+  transition: border-color .2s ease;
+}
+.step:hover { border-left-color: var(--accent); }
+.step-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  display: inline-block;
+  margin-right: 12px;
+  vertical-align: 2px;
+}
+.step-title {
+  display: inline;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.step p { margin: 12px 0; }
+.step ul, .step ol { margin: 12px 0; padding-left: 22px; }
+.step ul li, .step ol li { margin: 6px 0; }
+.step .hint { color: var(--ink-muted); font-style: italic; font-size: 15px; }
+
+/* final answer / callout */
+.final-answer {
+  margin: 36px 0 0;
+  padding: 22px 26px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent-2);
+  border-radius: 2px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.final-answer .tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 6px;
+}
+.final-answer .ans { font-size: 18px; }
+
+/* problem divider */
+.problem-divider {
+  margin: 80px 0 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .35em;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.problem-divider::before, .problem-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* code block */
+pre.code {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule-soft);
+  border-radius: 2px;
+  padding: 18px 20px;
+  margin: 16px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+  overflow-x: auto;
+  white-space: pre;
+}
+pre.code .c { color: var(--accent-green); }
+pre.code .k { color: var(--accent-2); font-weight: 500; }
+pre.code .b { color: var(--accent); font-weight: 500; }
+pre.code .m { color: var(--ink-muted); }
+
+code.inline {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--bg-soft);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: var(--ink);
+}
+
+/* mini cards grid */
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+.mini {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule-soft);
+  border-radius: 2px;
+  padding: 16px 18px;
+}
+.mini-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  display: block;
+  margin-bottom: 6px;
+}
+.mini-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin: 0 0 6px;
+}
+.mini-body {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.mini-where {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: .04em;
+}
+
+/* tables */
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+table.data th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 500;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--ink);
+}
+table.data td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule-soft);
+  vertical-align: top;
+}
+table.data tr:hover td { background: var(--bg-soft); }
+table.data td.k, table.data td.key {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 500;
+}
+table.data td.num {
+  font-family: var(--font-mono);
+  text-align: right;
+  white-space: nowrap;
+}
+table.data td.red    { color: var(--accent-2); font-weight: 500; }
+table.data td.green  { color: var(--accent-green); font-weight: 500; }
+table.data td.amber  { color: var(--accent-3); font-weight: 500; }
+table.data td.muted  { color: var(--ink-muted); }
+table.data .badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+.badge.easy   { color: var(--accent-green); background: rgba(74,122,71,.1); }
+.badge.medium { color: var(--accent-3);     background: rgba(200,127,58,.12); }
+.badge.hard   { color: var(--accent-2);     background: rgba(184,80,66,.1); }
+.badge.bonus  { color: var(--accent-3);     background: rgba(200,127,58,.12); }
+
+/* pitfall list */
+.pitfall-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+.pitfall-list li {
+  display: grid;
+  grid-template-columns: 32px 1fr 220px;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--rule);
+  align-items: start;
+}
+.pitfall-list li:last-child { border-bottom: none; }
+.pitfall-list .pf-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-2);
+  font-weight: 500;
+}
+.pitfall-list .pf-body {
+  font-size: 15px;
+  color: var(--ink);
+}
+.pitfall-list .pf-body .src {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-muted);
+  letter-spacing: .08em;
+  display: block;
+  margin-top: 2px;
+}
+.pitfall-list .pf-conseq {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--accent-2);
+  background: rgba(184,80,66,.08);
+  padding: 6px 10px;
+  border-radius: 2px;
+  text-align: center;
+}
+
+/* before/after KPI banner */
+.kpi-compare {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  gap: 16px;
+  align-items: stretch;
+  margin: 18px 0 8px;
+}
+.kpi-side {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule-soft);
+  border-radius: 2px;
+  padding: 16px 20px;
+}
+.kpi-side .lbl {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.kpi-side.before .lbl { color: var(--accent-2); }
+.kpi-side.after  .lbl { color: var(--accent-green); }
+.kpi-side .ttl {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.kpi-side ul { list-style: none; padding: 0; margin: 0; }
+.kpi-side li {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 4px 0;
+}
+.kpi-side.before li b { color: var(--accent-2); }
+.kpi-side.after  li b { color: var(--accent-green); }
+.kpi-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--ink-muted);
+}
+
+/* MathJax tweaks */
+mjx-container { color: var(--ink); }
+mjx-container[display="true"] { margin: 12px 0 !important; }
+</style>
+</head>
+<body>
+
+<button class="side-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰ Contents</button>
+
+<div class="layout">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <h1 class="brand">
+      ICC Final Project
+      <em>Tutorial Workbook</em>
+    </h1>
+    <p class="brand-sub">자동제어 · TA Reference · 2026 Spring</p>
+
+    <div class="contents-label">Contents</div>
+
+    <ul class="toc-list">
+      <li class="toc-item" data-target="s01">
+        <a href="#s01">
+          <span class="toc-num">01</span>
+          <span>
+            <div class="toc-title">프로젝트 개요</div>
+            <div class="toc-sub">BMW_5 · 6 시나리오 · 점수 구조</div>
+          </span>
+        </a>
+      </li>
+      <li class="toc-item" data-target="s02">
+        <a href="#s02">
+          <span class="toc-num">02</span>
+          <span>
+            <div class="toc-title">제출 워크플로</div>
+            <div class="toc-sub">git · grade.m · pitfalls</div>
+          </span>
+        </a>
+      </li>
+      <li class="toc-item" data-target="s03">
+        <a href="#s03">
+          <span class="toc-num">03</span>
+          <span>
+            <div class="toc-title">제어 설계</div>
+            <div class="toc-sub">AFS/ESC/ABS/CDC · PID 골격</div>
+          </span>
+        </a>
+      </li>
+      <li class="toc-item" data-target="s04">
+        <a href="#s04">
+          <span class="toc-num">04</span>
+          <span>
+            <div class="toc-title">KPI 사전</div>
+            <div class="toc-sub">변수 · 8 함수 · 시나리오 매핑</div>
+          </span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="side-foot">
+      TA 소상연<br>
+      sangyeon623<br>@gmail.com
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ========== S01 — 프로젝트 개요 ========== -->
+    <section class="problem-section" id="s01">
+      <div class="problem-head">
+        <span class="problem-num">Section 01 · Project Brief</span>
+      </div>
+      <h2 class="problem-title">프로젝트 개요</h2>
+      <p class="problem-sub">BMW_5 가상 차량을 6개 표준 시나리오에서 제어해, baseline KPI를 임계 아래로 떨어뜨린다.</p>
+
+      <!-- 핵심 1줄 -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">한 줄로</h3>
+          <div class="card-meta"><span>BMW_5 14DOF</span><span>P1 시나리오 6종</span><span>KPI 자동 측정</span></div>
+        </div>
+        <div class="eq-banner">
+          학생은 <code class="inline">ctrl_*.m</code> 4개 함수를 채워 <strong>baseline 대비 KPI 개선율</strong>로 자동 채점된다.
+        </div>
+        <div class="kpi-compare">
+          <div class="kpi-side before">
+            <div class="lbl">Baseline · 제어기 OFF</div>
+            <div class="ttl">측정값 (대표)</div>
+            <ul>
+              <li>sideSlipMax &nbsp;&nbsp; <b>30.5°</b></li>
+              <li>stoppingDistance &nbsp;&nbsp; <b>72.3 m</b></li>
+              <li>absSlipRMS &nbsp;&nbsp; <b>0.73</b></li>
+            </ul>
+          </div>
+          <div class="kpi-arrow">→</div>
+          <div class="kpi-side after">
+            <div class="lbl">Target · 만점 조건</div>
+            <div class="ttl">학생 설계 후</div>
+            <ul>
+              <li>sideSlipMax &nbsp;&nbsp; <b>≤ 5°</b></li>
+              <li>stoppingDistance &nbsp;&nbsp; <b>≤ 40 m</b></li>
+              <li>absSlipRMS &nbsp;&nbsp; <b>≤ 0.10</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 점수 구조 -->
+      <div class="part-header">
+        <span class="part-tag">Score</span>
+        <h3 class="part-title">점수 구조 <em>— 100점 만점</em></h3>
+      </div>
+
+      <div class="step">
+        <span class="step-label">정량 70점</span>
+        <span class="step-title">자동 채점 — 6 시나리오 KPI</span>
+        <table class="data">
+          <thead>
+            <tr><th>시나리오</th><th>이름</th><th>난이도</th><th class="num">배점</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="k">A3</td><td>Step Steer</td><td><span class="badge easy">EASY</span></td><td class="num green">12 pt</td></tr>
+            <tr><td class="k">A1</td><td>ISO 3888 DLC</td><td><span class="badge medium">MEDIUM</span></td><td class="num green">15 pt</td></tr>
+            <tr><td class="k">A4</td><td>SS Circular</td><td><span class="badge easy">EASY</span></td><td class="num green">10 pt</td></tr>
+            <tr><td class="k">A7</td><td>Brake-in-Turn</td><td><span class="badge hard">HARD</span></td><td class="num green">15 pt</td></tr>
+            <tr><td class="k">B1</td><td>Straight Brake</td><td><span class="badge medium">MEDIUM</span></td><td class="num green">10 pt</td></tr>
+            <tr><td class="k">D1</td><td>DLC + Brake</td><td><span class="badge hard">HARD</span></td><td class="num green">8 pt</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">A1·A7 합 30점이 정량의 43%. 시간 더 쓰는 게 효율적.</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">정성 30점</span>
+        <span class="step-title">수동 채점 — 보고서 (8–12p)</span>
+        <ul>
+          <li>수학적 모델링 깊이 (8)</li>
+          <li>제어기법 선택 정당성 (8) — “왜 PID? 왜 LQR 안 썼나” 둘 다 적기</li>
+          <li>Gain 계산 과정 (6) — ZN tuning rule, pole placement, iteration</li>
+          <li>결과 분석 + 한계 인식 (5) — 솔직한 자기비판</li>
+          <li>가독성 + 인용 (3)</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <span class="step-label">가점 +10 / 감점 -18</span>
+        <span class="step-title">옵션 + 위반 시</span>
+        <table class="data">
+          <thead><tr><th>항목</th><th class="num">점수</th></tr></thead>
+          <tbody>
+            <tr><td>A2 Severe DLC 또는 A5 FMVSS 126 추가 통과</td><td class="num amber">+3</td></tr>
+            <tr><td>ctrl_coordinator 마찰원 + WLS allocation</td><td class="num amber">+3</td></tr>
+            <tr><td>C1 single bump 또는 C2 sweep CDC 효능 입증</td><td class="num amber">+2</td></tr>
+            <tr><td>gain scheduling 또는 LPV 적용 + 효능 입증</td><td class="num amber">+2</td></tr>
+            <tr><td>표절 의심 (Moss 검사)</td><td class="num red">−10</td></tr>
+            <tr><td>제출 형식 위반 (student_info 미기입, 허용 외 파일 수정)</td><td class="num red">−5</td></tr>
+            <tr><td>보고서 필수 섹션 6개 중 1개라도 누락</td><td class="num red">−3</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="problem-divider">end of section 01</div>
+    </section>
+
+
+    <!-- ========== S02 — 제출 워크플로 ========== -->
+    <section class="problem-section" id="s02">
+      <div class="problem-head">
+        <span class="problem-num">Section 02 · Submission Workflow</span>
+      </div>
+      <h2 class="problem-title">제출 워크플로</h2>
+      <p class="problem-sub">fork → clone → edit → grade.m → push. 4 제출물 + 5 함정만 피하면 안전.</p>
+
+      <!-- 4 제출물 -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">제출물 4종</h3>
+          <div class="card-meta"><span>code</span><span>doc</span><span>meta</span><span>proof</span></div>
+        </div>
+        <div class="mini-grid">
+          <div class="mini">
+            <span class="mini-tag">① CORE</span>
+            <div class="mini-title"><code class="inline">ctrl_*.m</code> × 4</div>
+            <div class="mini-body">제어 알고리즘 본체. 학기 핵심.</div>
+            <div class="mini-where">scripts/control/</div>
+          </div>
+          <div class="mini">
+            <span class="mini-tag">② DOC</span>
+            <div class="mini-title">docs/report.md</div>
+            <div class="mini-body">설계 논리 + 결과 분석 (8–12p). 코드만으론 ‘왜’ 알 수 없음.</div>
+            <div class="mini-where">docs/report.md</div>
+          </div>
+          <div class="mini">
+            <span class="mini-tag">③ META</span>
+            <div class="mini-title">student_info.m</div>
+            <div class="mini-body">학번 · 이름 · AI 사용 신고. 미기입 시 −5점.</div>
+            <div class="mini-where">scripts/student_info.m</div>
+          </div>
+          <div class="mini">
+            <span class="mini-tag">④ PROOF</span>
+            <div class="mini-title">grade_report.json</div>
+            <div class="mini-body">본인 PC <code class="inline">grade.m</code> 채점 결과. GitHub Actions 검증 증빙.</div>
+            <div class="mini-where">icc-project/grade_report.json</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Git workflow steps -->
+      <div class="part-header">
+        <span class="part-tag">Workflow</span>
+        <h3 class="part-title">5 단계 사이클</h3>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 01 · ONE-TIME</span>
+        <span class="step-title">Fork &amp; Clone</span>
+        <ol>
+          <li>강의 repo 우측 상단 <strong>“Use this template”</strong> → 본인 GitHub 계정에 <code class="inline">integrated-chassis-control-&lt;학번&gt;</code> 생성</li>
+          <li>본인 PC 로 clone:</li>
+        </ol>
+<pre class="code"><span class="c"># PowerShell</span>
+git clone https://github.com/&lt;본인&gt;/integrated-chassis-control-&lt;학번&gt;.git
+cd integrated-chassis-control-&lt;학번&gt;</pre>
+        <p class="hint">GitHub Classroom 은 2026-05 부로 신규 사용 중단 — 학생이 직접 fork.</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 02 · EDIT</span>
+        <span class="step-title">ctrl_*.m 수정 (MATLAB / VS Code)</span>
+        <p>수정 가능한 파일은 정해져 있다:</p>
+        <ul>
+          <li><code class="inline">scripts/control/ctrl_lateral.m / ctrl_longitudinal.m / ctrl_vertical.m / ctrl_coordinator.m</code></li>
+          <li><code class="inline">scripts/student_info.m</code></li>
+          <li><code class="inline">docs/report.md</code></li>
+          <li><code class="inline">config/sim_params.m</code> 중 <code class="inline">CTRL.*</code>, <code class="inline">LIM.*</code>, <code class="inline">SIM.solver</code> 만</li>
+        </ul>
+        <p class="hint">위 외 파일 수정 시 채점 무효. 수정 필요 시 GitHub Issue 로 사전 문의.</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 03 · GRADE</span>
+        <span class="step-title">본인 PC 에서 grade.m 실행</span>
+<pre class="code"><span class="c">% MATLAB Command Window</span>
+cd icc-project
+<span class="k">run</span>(<span class="b">'scripts/grade.m'</span>)
+<span class="c">% → icc-project/grade_report.json 생성됨</span></pre>
+        <p>이 단계가 본 과제의 <strong>채점 자체</strong>. GitHub Actions 는 MATLAB을 돌리지 않고 검증만 한다 (campus license 제약).</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 04 · COMMIT &amp; PUSH</span>
+        <span class="step-title">grade_report.json 포함해서 push</span>
+<pre class="code">git add icc-project/scripts/control/ctrl_*.m \
+        icc-project/scripts/student_info.m \
+        icc-project/grade_report.json \
+        icc-project/docs/report.md
+git commit -m <span class="b">"Submit final controllers"</span>
+git push origin main</pre>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 05 · VERIFY</span>
+        <span class="step-title">GitHub Actions Summary 확인</span>
+        <p>본인 fork 의 Actions 탭 → 최근 run → <strong>Summary</strong>:</p>
+        <ul>
+          <li>스키마 검증 (grade_report 양식)</li>
+          <li>SHA256 무결성 검증 <code class="inline">ctrl_signature == 실제 파일 hash</code></li>
+          <li>시나리오별 ✅/❌ 표시 + 점수</li>
+        </ul>
+        <p class="hint">grade_report.json 만 수동 편집해 점수 올리려는 시도는 자동 차단 + 학칙 위반.</p>
+      </div>
+
+      <!-- Pitfalls -->
+      <div class="part-header">
+        <span class="part-tag">Pitfalls</span>
+        <h3 class="part-title">5 가지 주요 함정 <em>— 이것만 피해도 안전</em></h3>
+      </div>
+
+      <ol class="pitfall-list">
+        <li>
+          <div class="pf-num">①</div>
+          <div class="pf-body">student_info.m 안 채움<span class="src">ASSIGNMENT §5.4</span></div>
+          <div class="pf-conseq">−5점 감점</div>
+        </li>
+        <li>
+          <div class="pf-num">②</div>
+          <div class="pf-body">ctrl_*.m 외 허용 외 파일 수정<span class="src">ASSIGNMENT §2</span></div>
+          <div class="pf-conseq">채점 무효</div>
+        </li>
+        <li>
+          <div class="pf-num">③</div>
+          <div class="pf-body">grade_report.json 빠뜨리고 push<span class="src">ASSIGNMENT §4.1.1</span></div>
+          <div class="pf-conseq">채점 자체 불가</div>
+        </li>
+        <li>
+          <div class="pf-num">④</div>
+          <div class="pf-body">ctrl 수정 후 grade.m 재실행 안 함<span class="src">GETTING_STARTED §8</span></div>
+          <div class="pf-conseq">ctrl_signature mismatch → Actions FAIL</div>
+        </li>
+        <li>
+          <div class="pf-num">⑤</div>
+          <div class="pf-body">한글/공백 많은 폴더 경로 사용<span class="src">실측 관찰</span></div>
+          <div class="pf-conseq">도구 호환성 위험</div>
+        </li>
+      </ol>
+
+      <div class="problem-divider">end of section 02</div>
+    </section>
+
+
+    <!-- ========== S03 — 제어 설계 ========== -->
+    <section class="problem-section" id="s03">
+      <div class="problem-head">
+        <span class="problem-num">Section 03 · Controller Design</span>
+      </div>
+      <h2 class="problem-title">제어 설계 — 무엇을 만드나</h2>
+      <p class="problem-sub">자동제어 강의에 없는 차량 약어 4개, ctrl_*.m 4 함수, PID 출발점 골격.</p>
+
+      <!-- Part (a) 약어 -->
+      <div class="part-header">
+        <span class="part-tag">Part (a)</span>
+        <h3 class="part-title">차량 제어 약어 4개</h3>
+      </div>
+
+      <div class="mini-grid">
+        <div class="mini">
+          <span class="mini-tag">AFS</span>
+          <div class="mini-title">Active Front Steer</div>
+          <div class="mini-body">운전자 조향에 보조 조향을 더함 — yaw rate 추종.</div>
+          <div class="mini-where">→ ctrl_lateral</div>
+        </div>
+        <div class="mini">
+          <span class="mini-tag">ESC</span>
+          <div class="mini-title">Electronic Stability Control</div>
+          <div class="mini-body">좌/우 브레이크 차동으로 yaw moment 생성 — 슬립 제어.</div>
+          <div class="mini-where">→ ctrl_lateral + coordinator</div>
+        </div>
+        <div class="mini">
+          <span class="mini-tag">ABS</span>
+          <div class="mini-title">Anti-lock Brake System</div>
+          <div class="mini-body">휠 잠김 방지 — slip ratio $|\kappa| \le 0.12$ 유지.</div>
+          <div class="mini-where">→ ctrl_longitudinal</div>
+        </div>
+        <div class="mini">
+          <span class="mini-tag">CDC</span>
+          <div class="mini-title">Continuous Damping Control</div>
+          <div class="mini-body">서스펜션 감쇠 실시간 조절 — 승차감 / 안티롤.</div>
+          <div class="mini-where">→ ctrl_vertical</div>
+        </div>
+      </div>
+
+      <!-- Part (b) 4 함수 -->
+      <div class="part-header">
+        <span class="part-tag">Part (b)</span>
+        <h3 class="part-title">ctrl_*.m 4 함수 <em>— 설계 대상</em></h3>
+      </div>
+
+      <table class="data">
+        <thead>
+          <tr><th>파일</th><th>설계 대상</th><th>핵심 요구</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="k">ctrl_lateral.m</td>
+            <td>AFS + ESC</td>
+            <td>yaw rate 추종 + |β| > 3° 시 yaw moment</td>
+          </tr>
+          <tr>
+            <td class="k">ctrl_longitudinal.m</td>
+            <td>속도 추종 + ABS</td>
+            <td>vxRef 추종 + |κ| > 0.12 시 brake 감소 + 저크 제한</td>
+          </tr>
+          <tr>
+            <td class="k">ctrl_vertical.m</td>
+            <td>CDC</td>
+            <td>Skyhook / hybrid — 1–2 Hz body bounce vs 10–15 Hz wheel hop</td>
+          </tr>
+          <tr>
+            <td class="k">ctrl_coordinator.m</td>
+            <td>Allocation</td>
+            <td>ESC Mz → 4륜 brake 차동 분배, 마찰원 고려</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Part (c) 각 제어기 설계 출발점 -->
+      <div class="part-header">
+        <span class="part-tag">Part (c)</span>
+        <h3 class="part-title">각 제어기 설계 출발점 <em>— 어떻게 시작할 것인가</em></h3>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 01</span>
+        <span class="step-title">ctrl_lateral · AFS + ESC</span>
+        <p><strong>목표</strong> — driver 조향 위에 보조 조향을 더해 yaw rate 를 추종하고, slip angle 폭주를 막는다.</p>
+        <p><strong>출발점</strong></p>
+        <ol>
+          <li>먼저 <strong>yawRateRef</strong> 를 bicycle 정상상태 식으로 계산한다 — 이것이 추종 목표:
+            $$ r_{\text{ref}} \;=\; \dfrac{v_x\,\delta_{\text{driver}}}{L \,+\, K_{us}\,v_x^{\,2}} $$
+            $L$ = wheelbase, $K_{us}$ = understeer gradient.
+          </li>
+          <li><strong>AFS</strong>: yaw rate 오차 $r_{\text{ref}} - r$ 에 PID 를 걸어 보조 조향각을 만든다.</li>
+          <li><strong>ESC</strong>: $|\beta| &gt; \beta_{th}$ ($\approx 3°$) 일 때 driver intent 반대 방향으로 yaw moment 인가 (β-limiter).</li>
+        </ol>
+        <p><strong>방향</strong></p>
+        <ul>
+          <li><strong>속도 적응</strong>: 같은 게인이 저속/고속에서 다르게 동작 — gain scheduling $K(v_x)$ 권장.</li>
+          <li><strong>anti-windup</strong>: 적분기 clip. saturation 동시 발생 시 폭주 방지.</li>
+          <li><strong>saturation</strong>: <code class="inline">|δ_AFS| ≤ MAX_STEER_ANGLE</code>.</li>
+        </ul>
+        <p class="hint">PID 가 출발점. 여유 있으면 bicycle state-space + LQR 로 확장 (가점 +2).</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 02</span>
+        <span class="step-title">ctrl_longitudinal · 속도 + ABS</span>
+        <p><strong>목표</strong> — vxRef 추종 + 휠 잠김 (slip ratio 폭주) 방지.</p>
+        <p><strong>출발점</strong></p>
+        <ol>
+          <li>속도 오차 $v_{xRef} - v_x$ 에 PI 를 걸어 총 종방향 힘 $F_x$ 산출.</li>
+          <li>$F_x \ge 0$ → 가속 (brakeRatio = 0), $F_x &lt; 0$ → 제동 (brakeRatio 비례).</li>
+          <li><strong>ABS</strong>: 휠 slip ratio $\kappa$ 가 target $\kappa_{\text{ref}} = -0.12$ ($\mu_{\text{peak}}$) 를 추종하도록 brake torque 조절.</li>
+        </ol>
+        <p><strong>방향</strong></p>
+        <ul>
+          <li><strong>저크 제한</strong>: 힘 변화율 $|dF_x/dt|$ 을 <code class="inline">LIM.MAX_JERK</code> 안으로.</li>
+          <li><strong>가속 한계</strong>: $|F_x| \le m \cdot a_{x,\max}$.</li>
+        </ul>
+        <p class="hint">학생이 가장 많이 틀리는 부분 — ABS 를 <code class="inline">if |κ|>0.12 then brake off</code> 같은 bang-bang 으로 짜면 휠이 잠겼다 풀렸다 진동 (absSlipRMS 폭주). 반드시 <strong>slip ratio 추종 PI</strong>:
+          $$ T_b \;=\; T_{b,0} \;+\; K_p^{\!ABS}\!\bigl(\kappa - \kappa_{\text{ref}}\bigr) \;+\; K_i^{\!ABS}\!\!\int\!\bigl(\kappa - \kappa_{\text{ref}}\bigr) dt $$
+        </p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 03</span>
+        <span class="step-title">ctrl_vertical · CDC (반능동 서스펜션)</span>
+        <p><strong>목표</strong> — 4륜 감쇠 계수를 실시간 조절해 승차감 + 안티롤 동시 달성.</p>
+        <p><strong>출발점</strong> — <strong>Skyhook 알고리즘</strong></p>
+        <ol>
+          <li>각 휠에 대해 body 수직속도 $\dot z_s$ 와 서스펜션 상대속도 $\dot z_{\text{rel}}$ 의 부호를 본다.</li>
+          <li>부호가 같으면 감쇠 크게 (cMax), 다르면 작게 (cMin):
+            $$ c_{\text{sky},i} \;=\; \begin{cases} c_{\max} & \dot z_s \cdot \dot z_{\text{rel}} &gt; 0 \\ c_{\min} & \text{otherwise} \end{cases} $$
+          </li>
+        </ol>
+        <p><strong>방향</strong></p>
+        <ul>
+          <li><strong>빈도 분리</strong>: body bounce (1–2 Hz) 와 wheel hop (10–15 Hz) 는 다른 전략 필요 — Hybrid (Skyhook + Groundhook) 권장.</li>
+          <li><strong>안티롤 보상</strong>: 횡가속도 $a_y$, roll 각도 $\phi$ 에 비례해 좌우 휠 감쇠 차등 (외측 ↑, 내측 ↓).</li>
+          <li><strong>범위 제한</strong>: <code class="inline">CTRL.VER.cMin ≤ c ≤ CTRL.VER.cMax</code>.</li>
+        </ul>
+        <p class="hint">정량 70점에는 거의 영향 없음 (가점 +2 만). 시간 부족하면 마지막으로 미루고, 코드는 default 감쇠 유지해도 OK.</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">Step 04</span>
+        <span class="step-title">ctrl_coordinator · Allocation</span>
+        <p><strong>목표</strong> — 횡·종·수직 제어기의 출력을 실제 actuator 명령으로 변환 + 물리 한계 검사.</p>
+        <p><strong>출발점</strong></p>
+        <ol>
+          <li><strong>조향</strong>: AFS 조향각을 그대로 전달 + saturation.</li>
+          <li><strong>ESC yaw moment → 4륜 brake 차동</strong>: track 반거리를 lever arm 으로 사용
+            $$ \Delta T_f \;=\; \dfrac{M_z}{2\,(t_f/2)},\qquad \Delta T_r \;=\; \dfrac{M_z}{2\,(t_r/2)} $$
+            전·후 배분 비율 60:40 정도가 표준.
+          </li>
+          <li><strong>종방향 제동</strong>: 4륜 균등 분배 (lonCmd.Fx_total &lt; 0 일 때).</li>
+          <li><strong>감쇠 명령</strong>: ctrl_vertical 출력을 그대로 전달.</li>
+        </ol>
+        <p><strong>방향</strong></p>
+        <ul>
+          <li><strong>마찰원 제약</strong>: 종 + 횡 동시 인가 시 $\sqrt{F_x^2 + F_y^2} \le \mu F_z$ 위반 검사, 위반 시 scale down. <strong>가점 +3</strong>.</li>
+          <li><strong>WLS allocation</strong>: simple split 대신 weighted least squares 로 4륜 토크 분배 — <strong>가점 +3</strong>.</li>
+        </ul>
+        <p class="hint">먼저 simple split 으로 동작 보고, 시간 남으면 마찰원 검사 → WLS 순으로 확장.</p>
+      </div>
+
+      <div class="problem-divider">end of section 03</div>
+    </section>
+
+
+    <!-- ========== S04 — KPI 사전 ========== -->
+    <section class="problem-section" id="s04">
+      <div class="problem-head">
+        <span class="problem-num">Section 04 · KPI Reference</span>
+      </div>
+      <h2 class="problem-title">KPI 사전</h2>
+      <p class="problem-sub">차량 동역학 변수 5종, KPI 함수 8종 (수식 포함), 시나리오 매핑.</p>
+
+      <!-- ============ Part (a) — 5 core variables ============ -->
+      <div class="part-header">
+        <span class="part-tag">Part (a)</span>
+        <h3 class="part-title">핵심 5 변수 <em>— r, β, κ, K<sub>us</sub>, LTR</em></h3>
+      </div>
+
+      <!-- yaw rate -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">yaw rate · $r$, $\dot\psi$</h3>
+          <div class="card-meta"><span>rad/s</span><span>핸들링 응답</span></div>
+        </div>
+        <p>차량이 수직축 (z) 기준 회전하는 각속도. <strong>부호 컨벤션</strong>: 위에서 봤을 때 반시계 (+).</p>
+        <div class="eq-banner">
+          $r \;=\; \dot\psi,\qquad r_{\text{ref}} \;=\; \dfrac{v_x\,\delta}{L + K_{us}\,v_x^{\,2}}$
+        </div>
+        <table class="data">
+          <thead><tr><th>참고값</th><th>범위</th></tr></thead>
+          <tbody>
+            <tr><td class="green">일반 주행</td><td class="num">0.1 – 0.3 rad/s</td></tr>
+            <tr><td class="amber">급선회</td><td class="num">0.5 – 0.8 rad/s</td></tr>
+            <tr><td class="red">위험 임계</td><td class="num">&gt; 1.0 rad/s</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- slip angle -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">slip angle (사이드 슬립) · $\beta$</h3>
+          <div class="card-meta"><span>rad (출력 deg)</span><span>안정성</span></div>
+        </div>
+        <p>차량 진행속도 벡터와 차체 종축 사이의 각도. <strong>“차가 옆으로 미끄러지는 정도”</strong>.</p>
+        <div class="eq-banner">
+          $\beta \;=\; \arctan\!\Bigl(\dfrac{v_y}{v_x}\Bigr) \;\approx\; \dfrac{v_y}{v_x}$
+        </div>
+        <p><strong>왜 yaw rate 만으론 부족한가</strong>: $r$ 만 잡으면 차가 회전하지 않고 옆으로 미끄러질 수 있음 (드리프트). $\beta$ 는 진행방향 이탈을 측정.</p>
+        <table class="data">
+          <thead><tr><th>임계</th><th class="num">값</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td class="green">정상</td><td class="num">$\beta &lt; 2°$</td><td>제어 가능</td></tr>
+            <tr><td class="amber">주의</td><td class="num">$2° \le \beta \le 4°$</td><td>운전자 보정 가능</td></tr>
+            <tr><td class="red">위험</td><td class="num">$\beta &gt; 4°$</td><td>숙련자만 회복</td></tr>
+            <tr><td class="red">제어불능</td><td class="num">$\beta &gt; 7°$</td><td>일반인 회복 불가</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- slip ratio -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">slip ratio · $\kappa$</h3>
+          <div class="card-meta"><span>무차원</span><span>가속/제동</span></div>
+        </div>
+        <p>휠 회전속도와 차량 속도의 비율 차이.</p>
+        <div class="eq-banner">
+          가속: $\kappa = \dfrac{R_w\,\omega - v_x}{R_w\,\omega}$ &nbsp;&nbsp;·&nbsp;&nbsp; 제동: $\kappa = \dfrac{R_w\,\omega - v_x}{v_x}$
+        </div>
+        <p><strong>부호 컨벤션</strong>: 가속 (+) · 제동 (−). ABS target $\kappa = -0.12$ (제동, $\mu_{\text{peak}}$).</p>
+        <table class="data">
+          <thead><tr><th>영역</th><th class="num">값</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td class="green">미마찰</td><td class="num">$\kappa \approx 0$</td><td>pure rolling</td></tr>
+            <tr><td class="green">$\mu_{\text{peak}}$</td><td class="num">$|\kappa| \approx 0.10 – 0.15$</td><td>ABS 목표</td></tr>
+            <tr><td class="amber">미끄러짐</td><td class="num">$|\kappa| &gt; 0.15$</td><td>$\mu$ 감소</td></tr>
+            <tr><td class="red">완전 잠김 / 헛돌기</td><td class="num">$|\kappa| = 1.0$</td><td>제어 불가</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- understeer gradient -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">understeer gradient · $K_{us}$</h3>
+          <div class="card-meta"><span>rad·s²/m</span><span>정상상태 응답</span></div>
+        </div>
+        <p>횡가속도 증가에 따라 운전자가 추가로 돌려야 하는 조향각의 비율.</p>
+        <div class="eq-banner">
+          $K_{us} \;=\; \dfrac{W_f}{C_f} \;-\; \dfrac{W_r}{C_r}$
+          &nbsp;&nbsp;·&nbsp;&nbsp; $W = \text{축 하중}, \; C = \text{코너링 강성}$
+        </div>
+        <table class="data">
+          <thead><tr><th>부호</th><th>의미</th><th>예</th></tr></thead>
+          <tbody>
+            <tr><td class="green">$K_{us} &gt; 0$</td><td>understeer (안전)</td><td>양산차 기본</td></tr>
+            <tr><td class="muted">$K_{us} = 0$</td><td>neutral steer</td><td>—</td></tr>
+            <tr><td class="red">$K_{us} &lt; 0$</td><td>oversteer (위험)</td><td>F1 / 드리프트</td></tr>
+            <tr><td class="amber">A4 target</td><td>BMW_5 ± 80%</td><td><b>0.003</b></td></tr>
+          </tbody>
+        </table>
+        <p class="hint">A4 에서 정상상태 도달 못하면 부호 자체가 틀린 값 (e.g. staff −2547) → 0점.</p>
+      </div>
+
+      <!-- LTR -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">load transfer ratio · LTR</h3>
+          <div class="card-meta"><span>무차원</span><span>전복 지표</span></div>
+        </div>
+        <p>좌우 휠 사이의 수직 하중 차이 비율. <strong>부호</strong>: 우측 하중 큼 (+).</p>
+        <div class="eq-banner">
+          $\text{LTR} \;=\; \dfrac{F_{zR} - F_{zL}}{F_{zR} + F_{zL}} \quad\in\;[-1,\, +1]$
+        </div>
+        <table class="data">
+          <thead><tr><th>임계</th><th class="num">값</th><th>상태</th></tr></thead>
+          <tbody>
+            <tr><td class="green">정상</td><td class="num">$|\text{LTR}| &lt; 0.3$</td><td>일상 코너링</td></tr>
+            <tr><td class="amber">위험 (P1 임계)</td><td class="num">$|\text{LTR}| &gt; 0.6$</td><td>전복 마진 감소</td></tr>
+            <tr><td class="red">전복</td><td class="num">$|\text{LTR}| = 1.0$</td><td>한쪽 휠 완전 부상</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">명세 P1 임계 0.6 = BMW_5 세단 기준. SUV 면 0.7–0.8.</p>
+      </div>
+
+      <!-- ============ Part (b) — 8 KPI functions ============ -->
+      <div class="part-header">
+        <span class="part-tag">Part (b)</span>
+        <h3 class="part-title">8 KPI 함수 <em>— 수식 포함</em></h3>
+      </div>
+
+      <!-- kpi_yawrate_response -->
+      <div class="step">
+        <span class="step-label">A3 · 12 pt</span>
+        <span class="step-title">kpi_yawrate_response — Step 응답</span>
+        <p>2차 시스템 표준 지표. 학부 자동제어에서 배운 그대로.</p>
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th>단위</th><th class="num">임계</th></tr></thead>
+          <tbody>
+            <tr><td class="k">overshoot_pct</td><td>$(r_{\text{peak}} - r_{ss})/r_{ss} \times 100$</td><td>%</td><td class="num red">≤ 10</td></tr>
+            <tr><td class="k">riseTime</td><td>10% → 90% 도달 시간</td><td>s</td><td class="num red">≤ 0.3</td></tr>
+            <tr><td class="k">settlingTime</td><td>±2% 밴드 진입 + 유지</td><td>s</td><td class="num red">≤ 0.8</td></tr>
+            <tr><td class="k">r_ss</td><td>정상상태 (마지막 20% 평균)</td><td>rad/s</td><td class="num muted">정보</td></tr>
+            <tr><td class="k">r_peak</td><td>최대 yaw rate</td><td>rad/s</td><td class="num muted">정보</td></tr>
+          </tbody>
+        </table>
+        <p class="hint"><strong>진단</strong>: overshoot ↑ Kp 과대 / Kd 부족 · settle ↑ over-damped</p>
+      </div>
+
+      <!-- kpi_braking -->
+      <div class="step">
+        <span class="step-label">B1 · 5 pt (stoppingDist)</span>
+        <span class="step-title">kpi_braking — UN-R 13H 표준 제동</span>
+        <p>UN Regulation 13H Annex 3 정의에 따른 MFDD (Mean Fully-Developed Deceleration):</p>
+        $$ \text{MFDD} \;=\; \dfrac{(0.8\,v_0)^2}{25.92 \,\cdot\, (s_2 - s_1)} $$
+        <p>$s_1$ = $0.8 v_0$ 도달 시 누적거리, $s_2$ = $0.1 v_0$ 도달 시 누적거리. 시작/끝 transient 빼고 평가.</p>
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th>단위</th><th class="num">임계</th></tr></thead>
+          <tbody>
+            <tr><td class="k">stoppingDistance</td><td>$v_x = 0$ 까지 누적거리</td><td>m</td><td class="num red">≤ 40</td></tr>
+            <tr><td class="k">MFDD</td><td>평균 발달 감속도</td><td>m/s²</td><td class="num amber">7 – 10</td></tr>
+            <tr><td class="k">muUtilization</td><td>$\text{MFDD}/(\mu g)$</td><td>—</td><td class="num green">→ 1.0</td></tr>
+            <tr><td class="k">jerkMax</td><td>$|d(a_x)/dt|_{\max}$</td><td>m/s³</td><td class="num muted">낮을수록</td></tr>
+            <tr><td class="k">timeToStop</td><td>정지까지 시간</td><td>s</td><td class="num muted">정보</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- kpi_abs_slip -->
+      <div class="step">
+        <span class="step-label">B1 · 5 pt</span>
+        <span class="step-title">kpi_abs_slip — ABS 추종 RMS</span>
+        <p>브레이크 작동 중 slip ratio 가 target ($\kappa_{\text{target}} = -0.12$) 으로부터 떨어진 RMS 오차.</p>
+        $$ \text{err}_w(t) \;=\; \kappa_w(t) - \kappa_{\text{target}},\qquad \text{RMS}_w \;=\; \sqrt{\overline{\text{err}_w^{\,2}}} $$
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th class="num">임계</th></tr></thead>
+          <tbody>
+            <tr><td class="k">absSlipRMS</td><td>4륜 each RMS</td><td class="num red">≤ 0.10</td></tr>
+            <tr><td class="k">maxSlipRMS</td><td>4륜 중 최대</td><td class="num muted">정보</td></tr>
+            <tr><td class="k">meanSlipRMS</td><td>4륜 평균</td><td class="num muted">정보</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">RMS 0.7 (staff) = 휠 잠김. if-else ABS 는 진동 → PI 필요.</p>
+      </div>
+
+      <!-- kpi_lateral_path_deviation -->
+      <div class="step">
+        <span class="step-label">A1 · 4 pt &nbsp;·&nbsp; D1 · 2 pt</span>
+        <span class="step-title">kpi_lateral_path_deviation — 경로 추종</span>
+        <p>차량 궤적과 reference path 사이의 perpendicular 거리.</p>
+        $$ d(t) \;=\; \min_{p \in \text{refPath}} \bigl\| (x_{\text{veh}}(t), y_{\text{veh}}(t)) - p \bigr\| $$
+        $$ \text{devMax} = \max_t d(t),\qquad \text{devRMS} = \sqrt{\overline{d^{\,2}}} $$
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th class="num">임계</th></tr></thead>
+          <tbody>
+            <tr><td class="k">devMax</td><td>경로 최대 이탈</td><td class="num red">A1: ≤ 0.7 m · D1: ≤ 1.0 m</td></tr>
+            <tr><td class="k">devRMS</td><td>RMS 이탈</td><td class="num muted">정보</td></tr>
+            <tr><td class="k">devTimeSeries</td><td>시계열 (plot용)</td><td class="num muted">진단</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">AFS 과한 개입 → driver intent 충돌. feedforward $\delta_{\text{ff}} = L \cdot r_{\text{ref}} / v_x$ 추가 필요.</p>
+      </div>
+
+      <!-- kpi_tire_utilization -->
+      <div class="step">
+        <span class="step-label">A7, D1 가점</span>
+        <span class="step-title">kpi_tire_utilization — 마찰원 사용률</span>
+        <p>종 + 횡 결합 시 saturation 정도. 1.0 에 가까울수록 미끄러짐 시작.</p>
+        $$ u_i(t) \;=\; \dfrac{\sqrt{F_x^{\,2} + F_y^{\,2}}}{\mu_i \cdot F_{z,i}},\qquad i \in \{\text{FL, FR, RL, RR}\} $$
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th class="num">임계</th></tr></thead>
+          <tbody>
+            <tr><td class="k">uMaxPerCorner</td><td>각 휠 최대</td><td class="num red">&lt; 1.0</td></tr>
+            <tr><td class="k">uMaxOverall</td><td>4륜 중 최대</td><td class="num red">&lt; 1.0</td></tr>
+            <tr><td class="k">uRMSOverall</td><td>전체 RMS</td><td class="num amber">&lt; 0.7</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">A7 brake-in-turn 의 핵심. coordinator scale-down 안 하면 슬립 폭주.</p>
+      </div>
+
+      <!-- kpi_sine_with_dwell -->
+      <div class="step">
+        <span class="step-label">A5 가점 +3</span>
+        <span class="step-title">kpi_sine_with_dwell — FMVSS 126 (ESC 표준)</span>
+        <p>Sine 입력 + 0.5s dwell 후 yaw rate 감쇠율. ESC 효능의 글로벌 표준 (미국 시판 차량 의무).</p>
+        $$ R_{1.0} \;=\; \dfrac{|r(\text{BOS}+1.0\,\text{s})|}{r_{\text{peak}}},\qquad R_{1.75} \;=\; \dfrac{|r(\text{BOS}+1.75\,\text{s})|}{r_{\text{peak}}} $$
+        <p>BOS = Begin-of-Steer.</p>
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th class="num">임계</th></tr></thead>
+          <tbody>
+            <tr><td class="k">R1p0</td><td>1.0s 비율</td><td class="num red">≤ 0.35</td></tr>
+            <tr><td class="k">R1p75</td><td>1.75s 비율</td><td class="num red">≤ 0.20</td></tr>
+            <tr><td class="k">lateralDispBOS1p07</td><td>BOS+1.07s 횡변위</td><td class="num red">≥ 1.83 m</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- kpi_susp_travel -->
+      <div class="step">
+        <span class="step-label">C1, C2 가점 +2</span>
+        <span class="step-title">kpi_susp_travel — 서스펜션 변위</span>
+        <p>4-corner 서스펜션 변위 — CDC 효능 측정.</p>
+        $$ \text{peakPerCorner}_i \;=\; \max_t |z_{s,i}(t)|,\qquad i \in \{\text{FL, FR, RL, RR}\} $$
+        <p class="hint">baseline 대비 감소율로 CDC 평가.</p>
+      </div>
+
+      <!-- kpi_ride_iso2631 -->
+      <div class="step">
+        <span class="step-label">C1, C2 가점 +2</span>
+        <span class="step-title">kpi_ride_iso2631 — 승차감 (ISO 2631-1)</span>
+        <p>ISO 2631-1 $W_k$ 가중 RMS 가속도 — 인체가 가장 민감한 4–8 Hz 강조.</p>
+        $$ a_w(t) \;=\; W_k(s) \cdot a_z(t),\qquad a_{w,\text{rms}} \;=\; \sqrt{\overline{a_w^{\,2}}} $$
+        $$ \text{VDV} \;=\; \Bigl(\int a_w^{\,4}\,dt\Bigr)^{1/4} $$
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th>단위</th><th class="num">기준</th></tr></thead>
+          <tbody>
+            <tr><td class="k">aw_rms</td><td>가중 RMS</td><td>m/s²</td><td class="num green">&lt; 0.315 안락</td></tr>
+            <tr><td class="k">VDV</td><td>Vibration Dose Value</td><td>m/s$^{1.75}$</td><td class="num muted">낮을수록</td></tr>
+            <tr><td class="k">comfort</td><td>ISO Table B.1 등급</td><td>text</td><td class="num green">"not uncomfortable"</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">aw_rms &lt; 0.315 = 안락, &gt; 0.8 = 불편.</p>
+      </div>
+
+      <!-- ============ Part (c) — Scenario ↔ KPI mapping ============ -->
+      <div class="part-header">
+        <span class="part-tag">Part (c)</span>
+        <h3 class="part-title">시나리오 ↔ KPI 매핑 <em>— 한눈에</em></h3>
+      </div>
+
+      <table class="data">
+        <thead>
+          <tr>
+            <th>시나리오</th>
+            <th>이름</th>
+            <th>사용 KPI</th>
+            <th>핵심 임계</th>
+            <th class="num">배점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="k">A3</td><td>Step Steer</td>
+            <td class="k">yawrate_response</td>
+            <td>OS ≤ 10%, rise ≤ 0.3s, settle ≤ 0.8s</td>
+            <td class="num green">12</td>
+          </tr>
+          <tr>
+            <td class="k">A1</td><td>ISO 3888 DLC</td>
+            <td class="k">yawrate, β, LTR, path_dev</td>
+            <td>β ≤ 3°, LTR ≤ 0.6, dev ≤ 0.7m</td>
+            <td class="num green">15</td>
+          </tr>
+          <tr>
+            <td class="k">A4</td><td>SS Circular</td>
+            <td class="k">understeerGradient, β</td>
+            <td>K<sub>us</sub> = 0.003 ± 80%, β ≤ 2°</td>
+            <td class="num green">10</td>
+          </tr>
+          <tr>
+            <td class="k">A7</td><td>Brake-in-Turn</td>
+            <td class="k">β, LTR, (tire_util 가점)</td>
+            <td>β ≤ 5°, LTR ≤ 0.7</td>
+            <td class="num green">15</td>
+          </tr>
+          <tr>
+            <td class="k">B1</td><td>Straight Brake</td>
+            <td class="k">braking, abs_slip</td>
+            <td>stopping ≤ 40m, RMS ≤ 0.10</td>
+            <td class="num green">10</td>
+          </tr>
+          <tr>
+            <td class="k">D1</td><td>DLC + Brake</td>
+            <td class="k">β, LTR, path_dev</td>
+            <td>β ≤ 4°, LTR ≤ 0.6, dev ≤ 1.0m</td>
+            <td class="num green">8</td>
+          </tr>
+          <tr>
+            <td class="k amber">A5</td><td>FMVSS 126</td>
+            <td class="k">sine_with_dwell</td>
+            <td>R1.0 ≤ 0.35, R1.75 ≤ 0.20</td>
+            <td class="num amber">+3</td>
+          </tr>
+          <tr>
+            <td class="k amber">C1</td><td>Single Bump</td>
+            <td class="k">susp_travel, ride_iso2631</td>
+            <td>aw_rms 감소율, peak 감소</td>
+            <td class="num amber">+2</td>
+          </tr>
+          <tr>
+            <td class="k amber">C2</td><td>Sine Sweep</td>
+            <td class="k">susp_travel, ride_iso2631</td>
+            <td>aw_rms 감소율</td>
+            <td class="num amber">+2</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="final-answer">
+        <div class="tag">합계</div>
+        <div class="ans">
+          정량 자동채점 <strong>70 pt</strong> · 가점 합 <strong>+10 pt</strong> · 총합 상한 <strong>100 pt</strong>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script>
+// Active-section highlight in sidebar via IntersectionObserver
+const sections = document.querySelectorAll('.problem-section');
+const tocItems = document.querySelectorAll('.toc-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      tocItems.forEach(it => {
+        it.classList.toggle('active', it.dataset.target === id);
+      });
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+sections.forEach(s => observer.observe(s));
+
+// close mobile sidebar when clicking a TOC link
+document.querySelectorAll('.toc-list a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth <= 880) {
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
