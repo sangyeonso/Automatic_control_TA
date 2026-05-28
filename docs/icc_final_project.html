@@ -1425,52 +1425,52 @@ git push origin main</pre>
             <td>β ≤ 4°, LTR ≤ 0.6, dev ≤ 1.0m</td>
             <td class="num green">8</td>
           </tr>
-          <tr>
-            <td class="k amber">A2 또는 A5</td><td>Severe DLC / FMVSS 126</td>
-            <td class="k">sine_with_dwell (A5)</td>
-            <td>둘 중 하나 통과 — R1.0 ≤ 0.35, R1.75 ≤ 0.20</td>
-            <td class="num amber">+3</td>
-          </tr>
-          <tr>
-            <td class="k amber">C1 또는 C2</td><td>Single Bump / Sine Sweep</td>
-            <td class="k">susp_travel, ride_iso2631</td>
-            <td>둘 중 하나 — aw_rms 감소율 · peak 감소</td>
-            <td class="num amber">+2</td>
-          </tr>
         </tbody>
       </table>
 
-      <p class="hint" style="margin-top: 18px;"><strong>주의</strong> — A2/A5 는 둘 중 한 시나리오만 통과해도 +3, C1/C2 도 둘 중 한 시나리오만 통과해도 +2. 둘 다 통과해도 점수 두 배 안 됨.</p>
-
       <div class="part-header" style="margin-top: 36px;">
         <span class="part-tag" style="background: var(--accent-3);">Bonus</span>
-        <h3 class="part-title">구현 가점 <em>— 시나리오 외 평가</em></h3>
+        <h3 class="part-title">가점 4종 <em>— 최대 +10 pt</em></h3>
       </div>
 
       <table class="data">
         <thead>
           <tr>
+            <th>종류</th>
             <th>가점 항목</th>
-            <th>대상 파일</th>
             <th>판정 기준</th>
             <th class="num">배점</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="k amber">마찰원 + WLS allocation</td>
-            <td class="k">ctrl_coordinator.m</td>
+            <td class="muted">시나리오</td>
+            <td class="k amber">A2 또는 A5 통과<br><span style="font-weight: normal; font-family: var(--font-serif); color: var(--ink-soft); font-size: 13px;">Severe DLC / FMVSS 126</span></td>
+            <td>둘 중 하나 통과 — R1.0 ≤ 0.35, R1.75 ≤ 0.20 (A5 기준)</td>
+            <td class="num amber">+3</td>
+          </tr>
+          <tr>
+            <td class="muted">시나리오</td>
+            <td class="k amber">C1 또는 C2 통과<br><span style="font-weight: normal; font-family: var(--font-serif); color: var(--ink-soft); font-size: 13px;">Single Bump / Sine Sweep</span></td>
+            <td>둘 중 하나 — aw_rms 감소율 · peak 감소</td>
+            <td class="num amber">+2</td>
+          </tr>
+          <tr>
+            <td class="muted">구현</td>
+            <td class="k amber">마찰원 + WLS allocation<br><span style="font-weight: normal; font-family: var(--font-serif); color: var(--ink-soft); font-size: 13px;">ctrl_coordinator.m</span></td>
             <td>√(F<sub>x</sub>² + F<sub>y</sub>²) ≤ μF<sub>z</sub> 검사 + WLS 분배 구현</td>
             <td class="num amber">+3</td>
           </tr>
           <tr>
-            <td class="k amber">gain scheduling / LPV</td>
-            <td class="k">ctrl_lateral.m 등</td>
+            <td class="muted">구현</td>
+            <td class="k amber">gain scheduling / LPV<br><span style="font-weight: normal; font-family: var(--font-serif); color: var(--ink-soft); font-size: 13px;">ctrl_lateral.m 등</span></td>
             <td>속도 적응 게인 적용 + 효능 입증</td>
             <td class="num amber">+2</td>
           </tr>
         </tbody>
       </table>
+
+      <p class="hint" style="margin-top: 14px;"><strong>주의</strong> — A2/A5 와 C1/C2 는 각각 "또는". 둘 다 통과해도 점수 두 배 안 됨. 4 항목 합계 최대 <strong>+10 pt</strong>.</p>
 
       <div class="final-answer">
         <div class="tag">합계</div>
