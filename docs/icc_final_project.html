@@ -1220,123 +1220,14 @@ git push origin main</pre>
         </ul>
       </div>
 
-      <!-- Part (d) 설계 전략 — KPI 회복 우선순위 + Trade-off -->
+      <!-- Part (d) 제어 블록도 — 4 함수 데이터 흐름 -->
       <div class="part-header">
         <span class="part-tag">Part (d)</span>
-        <h3 class="part-title">설계 전략 <em>— 점수 우선순위와 Trade-off</em></h3>
-      </div>
-
-      <p class="problem-sub" style="margin-bottom: 14px;">한 번에 모두 잘 만들기는 어렵다. 영향력 큰 함수부터 작업하고, 시나리오 간 trade-off 를 의식적으로 선택.</p>
-
-      <div class="step">
-        <span class="step-label">전략 1</span>
-        <span class="step-title">구현 우선순위 <em>— 점수 기댓값 기준</em></span>
-        <table class="data" style="margin-top: 10px;">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>함수</th>
-              <th>영향 KPI</th>
-              <th class="num">최대 점수</th>
-              <th>난이도</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="k">1</td>
-              <td class="k">ctrl_lateral</td>
-              <td>A3 + A1 + A4 + A7 + D1 횡 KPI 전부</td>
-              <td class="num green">~55</td>
-              <td>중 — bicycle 모델만 알면 PID 시작 가능</td>
-            </tr>
-            <tr>
-              <td class="k">2</td>
-              <td class="k">ctrl_longitudinal</td>
-              <td>B1 absSlipRMS (+ stoppingDistance 일부)</td>
-              <td class="num green">~5–10</td>
-              <td>하 — 휠별 PI 1개</td>
-            </tr>
-            <tr>
-              <td class="k">3</td>
-              <td class="k">ctrl_coordinator</td>
-              <td>가점 마찰원 + D1 안정성</td>
-              <td class="num amber">+3 (가점)</td>
-              <td>하 — 1줄 조건문</td>
-            </tr>
-            <tr>
-              <td class="k">4</td>
-              <td class="k">ctrl_vertical</td>
-              <td>보고서 + 가점 C1/C2</td>
-              <td class="num amber">+2 (가점)</td>
-              <td>중 — Skyhook 알고리즘 이해</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="hint" style="margin-top: 12px;"><strong>권장 순서</strong> — 처음 1주는 ctrl_lateral 만. 점수 50+ 도달 확인 후 longitudinal/coordinator. vertical 은 마지막.</p>
+        <h3 class="part-title">제어 블록도 <em>— 4 함수 데이터 흐름</em></h3>
       </div>
 
       <div class="step">
-        <span class="step-label">전략 2</span>
-        <span class="step-title">Trade-off 매트릭스 <em>— 한 곳 좋아지면 다른 곳 나빠진다</em></span>
-        <table class="data" style="margin-top: 10px;">
-          <thead>
-            <tr>
-              <th>설계 결정</th>
-              <th>좋아지는 KPI</th>
-              <th>나빠지는 KPI</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>강한 ESC β-limiter (K<sub>β</sub> ↑, β<sub>th</sub> ↓)</td>
-              <td>A1 / A7 / D1 sideSlip</td>
-              <td>A4 K<sub>us</sub> tracking, AFS 와 conflict</td>
-            </tr>
-            <tr>
-              <td>공격적 LQR Q<sub>r</sub> (yaw rate weight)</td>
-              <td>A3 riseTime / settling</td>
-              <td>A3 overshoot ↑ (OFF baseline 통과 위험)</td>
-            </tr>
-            <tr>
-              <td>Reference shaping (yaw rate LPF, τ ↑)</td>
-              <td>A3 overshoot</td>
-              <td>A1 / D1 LTR ↑ (response 지연)</td>
-            </tr>
-            <tr>
-              <td>공격적 ABS κ<sub>ref</sub> = -0.15</td>
-              <td>B1 stoppingDistance (μ peak 활용)</td>
-              <td>B1 absSlipRMS ↑</td>
-            </tr>
-            <tr>
-              <td>마찰원 a<sub>max</sub> 마진 확대 (1.0·μg)</td>
-              <td>B1 brake authority</td>
-              <td>D1 cornering 안정성 ↓</td>
-            </tr>
-            <tr>
-              <td>4륜 brake 전축 편향 (70:30)</td>
-              <td>안정성 (under-steer 경향)</td>
-              <td>LTR (전축 하중 ↑)</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="hint" style="margin-top: 12px;"><strong>해석</strong> — 6 시나리오 점수 합계가 최대인 동작점을 찾는 게 목표. 1 시나리오에 over-fitting 하면 다른 시나리오 폭주.</p>
-      </div>
-
-      <div class="step">
-        <span class="step-label">전략 3</span>
-        <span class="step-title">5 대 함정 <em>— 0 점 위험을 만드는 흔한 실수</em></span>
-        <ol>
-          <li><strong>OFF baseline 미달</strong> — 채점식이 <code class="inline">val_on &gt;= val_off</code> 면 즉시 0. 컨트롤러가 자연 응답보다 나빠지면 점수 무. 약하게 시작해 점진적으로 강화 권장.</li>
-          <li><strong>Anti-windup 누락</strong> — LQI / PI 적분기 폭주 시 step input 에서 huge overshoot. <code class="inline">clip</code> + back-calc 둘 다 필요. <code class="inline">ctrlState.zInt = max(-z_max, min(z_max, ...))</code>.</li>
-          <li><strong>Saturation 무시</strong> — AFS ±5° / brake ±MAX_BRAKE_TRQ 한계 무시한 게인. saturation 발생 시 적분기 끄거나 (back-calc) tanh soft sat 사용.</li>
-          <li><strong>시나리오 over-fitting</strong> — A3 step 에 최적화 → A1 DLC LTR 폭주. 매 변경 후 6 시나리오 모두 grade.m 으로 검증.</li>
-          <li><strong>참조 모델 오류</strong> — bicycle steady-state 식 $r_{ref} = v_x\delta/(L + K_{us}v_x^2)$ 의 파라미터 (L, K<sub>us</sub>) 가 plant 와 일치하지 않으면 tracking error 가 항상 잔류. <code class="inline">veh_set.m</code> 의 값 확인.</li>
-        </ol>
-      </div>
-
-      <div class="step">
-        <span class="step-label">전략 4</span>
-        <span class="step-title">제어 블록도 <em>— 4 함수 데이터 흐름</em></span>
+        <span class="step-title">시그널 흐름 한눈에</span>
         <div style="background: var(--bg-card); padding: 24px 16px 16px; border-radius: 8px; margin: 16px 0; border: 1px solid var(--bg-soft);">
           <svg viewBox="0 0 820 720" xmlns="http://www.w3.org/2000/svg"
                style="display: block; margin: 0 auto; max-width: 100%; height: auto;"
