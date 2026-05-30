@@ -1149,7 +1149,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
           <li><strong>AFS</strong>: 오차 $r_{\text{ref}} - r$ 에 PID → 보조 조향각.</li>
           <li><strong>ESC</strong>: $|\beta| > 3°$ 일 때만 반대 방향 yaw moment 인가.</li>
         </ol>
-        <p class="hint">PID 부터. anti-windup + steer saturation 잊지 말 것. 여유 있으면 LQR 확장 (가점).</p>
       </div>
 
       <div class="step">
@@ -1160,7 +1159,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
           <li><strong>속도 PI</strong>: $F_x = K_p (v_{xRef} - v_x) + K_i \!\int\!\!\cdots$</li>
           <li><strong>ABS</strong>: 휠 slip $\kappa$ 가 $-0.12$ 근방에 머무르도록 휠별 brake torque 조절.</li>
         </ol>
-        <p class="hint">PI 1개로 시작. 저크 제한 (<code class="inline">LIM.MAX_JERK</code>) 만 신경.</p>
       </div>
 
       <div class="step">
@@ -1171,7 +1169,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
           <li>각 휠 body 속도 $\dot z_s$ 와 상대 속도 $\dot z_{\text{rel}}$ 의 부호 비교.</li>
           <li>부호 같으면 <code class="inline">cMax</code>, 다르면 <code class="inline">cMin</code>.</li>
         </ol>
-        <p class="hint">정량 KPI 직접 점수 없음 — 보고서 + 가점 (C1/C2) 대상. 마지막에 작업.</p>
       </div>
 
       <div class="step">
@@ -1184,7 +1181,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
           <li><strong>종방향 brake</strong>: 4륜 분배 (<code class="inline">lonCmd.Fx_total &lt; 0</code> 일 때).</li>
           <li><strong>감쇠</strong>: ctrl_vertical 결과 그대로 전달.</li>
         </ol>
-        <p class="hint">마찰원 검사 $\sqrt{F_x^2 + F_y^2} \le \mu F_z$ 추가 시 <strong>가점 +3</strong>.</p>
       </div>
 
       <!-- Part (d) 제어 블록도 — 4 함수 데이터 흐름 -->
