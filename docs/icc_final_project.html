@@ -1337,42 +1337,201 @@ git push origin main</pre>
       <div class="step">
         <span class="step-label">전략 4</span>
         <span class="step-title">제어 블록도 <em>— 4 함수 데이터 흐름</em></span>
-        <pre style="background: var(--bg-soft); padding: 16px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; line-height: 1.7; overflow-x: auto; margin: 12px 0; border-left: 3px solid var(--accent);">
-   ┌─────────────────┐
-   │ scenario inputs │  δ_driver, brake_cmd, vxRef
-   └────────┬────────┘
-            │
-            ▼
-   ┌────────────────────────────────────────────────┐
-   │            run_icc_scenario.m (loop)            │
-   │                                                  │
-   │  yawRateRef = calc_ref_yaw_rate(vx, δ_drv, VEH)│
-   │       │                                          │
-   │       ▼                                          │
-   │  ┌──────────────┐    ┌──────────────────┐      │
-   │  │ ctrl_lateral │    │ctrl_longitudinal │      │
-   │  │  AFS + ESC   │    │  vx PI + ABS     │      │
-   │  └──────┬───────┘    └────────┬─────────┘      │
-   │         │ latCmd               │ lonCmd         │
-   │         │ (δ_AFS, Mz)          │ (Fx, absMod)   │
-   │         ▼                      ▼                │
-   │   ┌──────────────────────────────────┐         │
-   │   │       ctrl_coordinator           │         │
-   │   │  Mz → 4륜 brake 차동            │         │
-   │   │  + Fx → 종 brake                │         │
-   │   │  + 마찰원 scale                  │         │
-   │   └──────────────┬───────────────────┘         │
-   │                  │ actCmd                       │
-   │                  ▼                              │
-   │   ┌──────────────────┐  ┌──────────────────┐  │
-   │   │ ctrl_vertical    │  │   plant_step      │  │
-   │   │  Skyhook (4륜)   │─▶│   14-DOF 차량     │  │
-   │   └──────────────────┘  └──────────────────┘  │
-   │                                  │              │
-   │                                  ▼              │
-   │                          plantState (다음 step)│
-   └────────────────────────────────────────────────┘</pre>
-        <p class="hint"><strong>핵심</strong> — 4 함수의 출력은 각각 독립이지만 <code class="inline">ctrl_coordinator</code> 에서 합쳐진다. 출력 필드명 (<code class="inline">latCmd.steerAngle</code>, <code class="inline">latCmd.yawMoment</code>, <code class="inline">lonCmd.Fx_total</code>, <code class="inline">verCmd</code>) 을 starter 와 동일하게 유지.</p>
+        <div style="background: var(--bg-card); padding: 24px 16px 16px; border-radius: 8px; margin: 16px 0; border: 1px solid var(--bg-soft);">
+          <svg viewBox="0 0 820 720" xmlns="http://www.w3.org/2000/svg"
+               style="display: block; margin: 0 auto; max-width: 100%; height: auto;"
+               role="img" aria-label="ICC 4-function control block diagram">
+
+            <defs>
+              <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z" fill="#5a544a"/>
+              </marker>
+              <marker id="arrFb" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M0,0 L10,5 L0,10 z" fill="#8a8275"/>
+              </marker>
+            </defs>
+
+            <!-- 헤더 캡션 -->
+            <text x="410" y="14" text-anchor="middle" font-size="12"
+                  font-family="EB Garamond, Georgia, serif" font-style="italic"
+                  fill="#8a8275">run_icc_scenario.m — per-step loop</text>
+
+            <!-- BOX 1 : scenario inputs -->
+            <rect x="220" y="24" width="380" height="52" rx="6"
+                  fill="#efe9dc" stroke="#8a8275" stroke-width="1.5"/>
+            <text x="410" y="46" text-anchor="middle" font-size="14"
+                  font-family="EB Garamond, Georgia, serif" font-weight="600"
+                  fill="#2a2722">scenario inputs</text>
+            <text x="410" y="65" text-anchor="middle" font-size="11"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  fill="#5a544a">δ_driver · vxRef · brake_cmd · z_road</text>
+
+            <!-- arrow 1→2 -->
+            <line x1="410" y1="76" x2="410" y2="104" stroke="#5a544a"
+                  stroke-width="1.6" marker-end="url(#arr)"/>
+
+            <!-- BOX 2 : calc_ref_yaw_rate -->
+            <rect x="220" y="104" width="380" height="52" rx="6"
+                  fill="#faf6ec" stroke="#8a8275" stroke-width="1.5"/>
+            <text x="410" y="126" text-anchor="middle" font-size="13"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  font-weight="600" fill="#2a2722">calc_ref_yaw_rate</text>
+            <text x="410" y="145" text-anchor="middle" font-size="11"
+                  font-family="EB Garamond, Georgia, serif" fill="#5a544a">
+              r_ref = v_x · δ / (L + K_us · v_x²)
+            </text>
+
+            <!-- bus from calc_ref → 3 ctrls -->
+            <line x1="410" y1="156" x2="410" y2="186" stroke="#5a544a" stroke-width="1.6"/>
+            <line x1="160" y1="186" x2="660" y2="186" stroke="#5a544a" stroke-width="1.6"/>
+            <line x1="160" y1="186" x2="160" y2="214" stroke="#5a544a"
+                  stroke-width="1.6" marker-end="url(#arr)"/>
+            <line x1="410" y1="186" x2="410" y2="214" stroke="#5a544a"
+                  stroke-width="1.6" marker-end="url(#arr)"/>
+            <line x1="660" y1="186" x2="660" y2="214" stroke="#5a544a"
+                  stroke-width="1.6" marker-end="url(#arr)"/>
+            <text x="415" y="180" font-size="10"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  fill="#8a8275">refs + plantState</text>
+
+            <!-- BOX 3a : ctrl_lateral (TEAL) -->
+            <rect x="60" y="214" width="200" height="74" rx="6"
+                  fill="#faf6ec" stroke="#1f5e6b" stroke-width="2"/>
+            <text x="160" y="238" text-anchor="middle" font-size="14"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  font-weight="600" fill="#1f5e6b">ctrl_lateral</text>
+            <text x="160" y="258" text-anchor="middle" font-size="12"
+                  font-family="EB Garamond, Georgia, serif" fill="#5a544a">AFS + ESC</text>
+            <text x="160" y="277" text-anchor="middle" font-size="10"
+                  font-family="EB Garamond, Georgia, serif" fill="#8a8275">
+              yaw rate 추종 · β-limiter
+            </text>
+
+            <!-- BOX 3b : ctrl_longitudinal (ORANGE) -->
+            <rect x="310" y="214" width="200" height="74" rx="6"
+                  fill="#faf6ec" stroke="#c87f3a" stroke-width="2"/>
+            <text x="410" y="238" text-anchor="middle" font-size="14"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  font-weight="600" fill="#c87f3a">ctrl_longitudinal</text>
+            <text x="410" y="258" text-anchor="middle" font-size="12"
+                  font-family="EB Garamond, Georgia, serif" fill="#5a544a">v_x PI + ABS</text>
+            <text x="410" y="277" text-anchor="middle" font-size="10"
+                  font-family="EB Garamond, Georgia, serif" fill="#8a8275">
+              속도 추종 · 슬립 제어
+            </text>
+
+            <!-- BOX 3c : ctrl_vertical (GREEN) -->
+            <rect x="560" y="214" width="200" height="74" rx="6"
+                  fill="#faf6ec" stroke="#4a7a47" stroke-width="2"/>
+            <text x="660" y="238" text-anchor="middle" font-size="14"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  font-weight="600" fill="#4a7a47">ctrl_vertical</text>
+            <text x="660" y="258" text-anchor="middle" font-size="12"
+                  font-family="EB Garamond, Georgia, serif" fill="#5a544a">Skyhook (4륜)</text>
+            <text x="660" y="277" text-anchor="middle" font-size="10"
+                  font-family="EB Garamond, Georgia, serif" fill="#8a8275">
+              body bounce · wheel hop
+            </text>
+
+            <!-- arrows ctrls → coordinator -->
+            <path d="M 160 288 L 160 348 L 350 348 L 350 376" stroke="#5a544a"
+                  stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+            <text x="170" y="342" font-size="11" font-weight="600"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  fill="#1f5e6b">latCmd</text>
+
+            <line x1="410" y1="288" x2="410" y2="376" stroke="#5a544a"
+                  stroke-width="1.6" marker-end="url(#arr)"/>
+            <text x="418" y="334" font-size="11" font-weight="600"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  fill="#c87f3a">lonCmd</text>
+
+            <path d="M 660 288 L 660 348 L 470 348 L 470 376" stroke="#5a544a"
+                  stroke-width="1.6" fill="none" marker-end="url(#arr)"/>
+            <text x="592" y="342" font-size="11" font-weight="600"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  fill="#4a7a47">verCmd</text>
+
+            <!-- BOX 4 : ctrl_coordinator (BURGUNDY) -->
+            <rect x="240" y="376" width="340" height="86" rx="6"
+                  fill="#faf6ec" stroke="#b85042" stroke-width="2"/>
+            <text x="410" y="402" text-anchor="middle" font-size="14"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  font-weight="600" fill="#b85042">ctrl_coordinator</text>
+            <text x="410" y="422" text-anchor="middle" font-size="11"
+                  font-family="EB Garamond, Georgia, serif" fill="#5a544a">
+              M_z → 4륜 brake 차동 · F_x → 종 brake
+            </text>
+            <text x="410" y="440" text-anchor="middle" font-size="11"
+                  font-family="EB Garamond, Georgia, serif" fill="#5a544a">
+              마찰원 scale · damping pass-through
+            </text>
+            <text x="410" y="455" text-anchor="middle" font-size="10"
+                  font-family="EB Garamond, Georgia, serif" fill="#8a8275">
+              (allocation 단계)
+            </text>
+
+            <!-- arrow coord → plant_step -->
+            <line x1="410" y1="462" x2="410" y2="510" stroke="#5a544a"
+                  stroke-width="1.6" marker-end="url(#arr)"/>
+            <text x="418" y="490" font-size="11" font-weight="600"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  fill="#b85042">actCmd</text>
+
+            <!-- BOX 5 : plant_step -->
+            <rect x="240" y="510" width="340" height="58" rx="6"
+                  fill="#efe9dc" stroke="#5a544a" stroke-width="2"/>
+            <text x="410" y="534" text-anchor="middle" font-size="14"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  font-weight="600" fill="#2a2722">plant_step</text>
+            <text x="410" y="554" text-anchor="middle" font-size="11"
+                  font-family="EB Garamond, Georgia, serif" fill="#5a544a">
+              14-DOF vehicle dynamics
+            </text>
+
+            <!-- arrow plant → state -->
+            <line x1="410" y1="568" x2="410" y2="620" stroke="#5a544a"
+                  stroke-width="1.6" marker-end="url(#arr)"/>
+
+            <!-- BOX 6 : plantState (output / loop) -->
+            <rect x="240" y="620" width="340" height="44" rx="6"
+                  fill="#faf6ec" stroke="#8a8275" stroke-width="1.5"
+                  stroke-dasharray="4 3"/>
+            <text x="410" y="647" text-anchor="middle" font-size="12"
+                  font-family="JetBrains Mono, ui-monospace, monospace"
+                  fill="#2a2722">plantState  ▶  next step k+1</text>
+
+            <!-- 피드백 루프: plantState → 우측을 따라 상단 bus 로 -->
+            <path d="M 580 642 L 790 642 L 790 186 L 668 186"
+                  stroke="#8a8275" stroke-width="1.3" fill="none"
+                  stroke-dasharray="5 4" marker-end="url(#arrFb)"/>
+            <text x="780" y="420" font-size="11"
+                  font-family="EB Garamond, Georgia, serif" font-style="italic"
+                  fill="#8a8275" transform="rotate(-90 780 420)">
+              feedback (vx, r, β, suspState …)
+            </text>
+
+            <!-- 4 함수 범례 (좌하단) -->
+            <g transform="translate(40, 690)">
+              <rect x="0" y="-4" width="12" height="3" fill="#1f5e6b"/>
+              <text x="18" y="0" font-size="10" font-family="EB Garamond, Georgia, serif"
+                    fill="#5a544a">lateral</text>
+              <rect x="76" y="-4" width="12" height="3" fill="#c87f3a"/>
+              <text x="94" y="0" font-size="10" font-family="EB Garamond, Georgia, serif"
+                    fill="#5a544a">longitudinal</text>
+              <rect x="174" y="-4" width="12" height="3" fill="#4a7a47"/>
+              <text x="192" y="0" font-size="10" font-family="EB Garamond, Georgia, serif"
+                    fill="#5a544a">vertical</text>
+              <rect x="246" y="-4" width="12" height="3" fill="#b85042"/>
+              <text x="264" y="0" font-size="10" font-family="EB Garamond, Georgia, serif"
+                    fill="#5a544a">coordinator</text>
+            </g>
+          </svg>
+        </div>
+
+        <p class="hint"><strong>핵심</strong> — 3 개 ctrl 함수는 독립으로 실행되지만 <code class="inline">ctrl_coordinator</code> 에서 합쳐져 단일 actuator 명령으로 변환된다. 출력 필드명 (<code class="inline">latCmd.steerAngle</code>, <code class="inline">latCmd.yawMoment</code>, <code class="inline">lonCmd.Fx_total</code>, <code class="inline">verCmd</code>) 을 starter 와 동일하게 유지할 것.</p>
       </div>
 
       <div class="problem-divider">end of section 03</div>
