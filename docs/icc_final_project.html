@@ -1038,6 +1038,22 @@ git push origin main</pre>
       <h2 class="problem-title">제어 설계 — 무엇을 만드나</h2>
       <p class="problem-sub">자동제어 강의에 없는 차량 약어 4개, ctrl_*.m 4 함수, PID 출발점 골격.</p>
 
+      <!-- Plant model figure -->
+      <figure style="margin: 24px 0 32px; padding: 20px; background: var(--bg-card); border: 1px solid var(--bg-soft); border-radius: 8px;">
+        <img src="images/vehicle_14dof.webp"
+             alt="14 DOF 차량 동역학 모델 (Top / Side / Front view)"
+             style="display: block; margin: 0 auto; max-width: 100%; height: auto;">
+        <figcaption style="text-align: center; margin-top: 14px; font-family: var(--font-serif); font-style: italic; color: var(--ink-muted); font-size: 13px; line-height: 1.5;">
+          Plant Model — 14 DOF 차량 동역학.
+          <br>
+          <span style="font-family: var(--font-mono); font-size: 11px;">
+            Top view: yaw γ, 4륜 lateral/longitudinal force (F<sub>s,i</sub>, F<sub>t,i</sub>), 조향각 δ<sub>f</sub>/δ<sub>r</sub>, wheelbase (a + b), track width (t<sub>f</sub>, t<sub>r</sub>) ·
+            Side view: pitch θ, sprung/unsprung mass, suspension (k<sub>s</sub>, C<sub>s</sub>), 타이어 강성 k<sub>n</sub> ·
+            Front view: roll φ, Roll axis, 좌우 F<sub>y</sub>/F<sub>z</sub>
+          </span>
+        </figcaption>
+      </figure>
+
       <!-- Part (a) 약어 -->
       <div class="part-header">
         <span class="part-tag">Part (a)</span>
