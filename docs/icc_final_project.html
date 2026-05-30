@@ -1468,7 +1468,7 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
       <!-- ============ Part (b) — 8 KPI functions ============ -->
       <div class="part-header">
         <span class="part-tag">Part (b)</span>
-        <h3 class="part-title">8 KPI 함수 <em>— 수식 포함</em></h3>
+        <h3 class="part-title">11 KPI 함수 <em>— 수식 포함</em></h3>
       </div>
 
       <!-- kpi_yawrate_response -->
@@ -1487,6 +1487,72 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
           </tbody>
         </table>
         <p class="hint"><strong>진단</strong>: overshoot ↑ Kp 과대 / Kd 부족 · settle ↑ over-damped</p>
+      </div>
+
+      <!-- kpi_slip_angle -->
+      <div class="step">
+        <span class="step-label">A1 · 6 pt &nbsp;·&nbsp; A4 · 5 pt &nbsp;·&nbsp; A7 · 8 pt &nbsp;·&nbsp; D1 · 4 pt</span>
+        <span class="step-title">kpi_slip_angle — 사이드 슬립 폭주 방지</span>
+        <p>차체 진행 방향과 속도 벡터의 각도. 차량이 옆으로 미끄러지는 정도. 폭주 시 드리프트 상태.</p>
+        $$ \beta(t) \;=\; \arctan \dfrac{v_y(t)}{v_x(t)} $$
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th>단위</th></tr></thead>
+          <tbody>
+            <tr><td class="k">sideSlipMax</td><td>$\max_t |\beta(t)|$</td><td>deg</td></tr>
+            <tr><td class="k">sideSlipRMS</td><td>RMS 슬립</td><td>deg</td></tr>
+          </tbody>
+        </table>
+        <table class="data" style="margin-top: 10px;">
+          <thead><tr><th>시나리오</th><th class="num">임계</th><th class="num">배점</th></tr></thead>
+          <tbody>
+            <tr><td class="k">A1 DLC</td><td class="num red">≤ 3°</td><td class="num">6</td></tr>
+            <tr><td class="k">A4 SS Circular</td><td class="num red">≤ 2°</td><td class="num">5</td></tr>
+            <tr><td class="k">A7 Brake-in-Turn</td><td class="num red">≤ 5°</td><td class="num">8</td></tr>
+            <tr><td class="k">D1 DLC+Brake</td><td class="num red">≤ 4°</td><td class="num">4</td></tr>
+            <tr><td class="muted"><strong>합계</strong></td><td class="num muted">—</td><td class="num"><strong>23</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="hint">β &gt; 임계 → 드리프트. <strong>ESC β-limiter</strong> 가 핵심 메커니즘.</p>
+      </div>
+
+      <!-- kpi_load_transfer -->
+      <div class="step">
+        <span class="step-label">A1 · 5 pt &nbsp;·&nbsp; A7 · 7 pt &nbsp;·&nbsp; D1 · 2 pt</span>
+        <span class="step-title">kpi_load_transfer — 좌우 휠 하중 비대칭</span>
+        <p>코너링·제동 시 좌우 휠 수직 하중 차이. <strong>rollover 위험 지표</strong>.</p>
+        $$ \text{LTR}(t) \;=\; \dfrac{F_{z,R}(t) - F_{z,L}(t)}{F_{z,R}(t) + F_{z,L}(t)} $$
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th></tr></thead>
+          <tbody>
+            <tr><td class="k">LTR_max</td><td>$\max_t |\text{LTR}(t)|$</td></tr>
+          </tbody>
+        </table>
+        <table class="data" style="margin-top: 10px;">
+          <thead><tr><th>시나리오</th><th class="num">임계</th><th class="num">배점</th></tr></thead>
+          <tbody>
+            <tr><td class="k">A1 DLC</td><td class="num red">≤ 0.6</td><td class="num">5</td></tr>
+            <tr><td class="k">A7 Brake-in-Turn</td><td class="num red">≤ 0.7</td><td class="num">7</td></tr>
+            <tr><td class="k">D1 DLC+Brake</td><td class="num red">≤ 0.6</td><td class="num">2</td></tr>
+            <tr><td class="muted"><strong>합계</strong></td><td class="num muted">—</td><td class="num"><strong>14</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="hint">|LTR| = 1 → 한쪽 휠 들림 (rollover 직전). 명세 P1 임계 0.6 = BMW_5 세단 기준.</p>
+      </div>
+
+      <!-- kpi_understeer_gradient -->
+      <div class="step">
+        <span class="step-label">A4 · 5 pt</span>
+        <span class="step-title">kpi_understeer_gradient — 정상상태 조향 응답</span>
+        <p>SS Circular (A4) 에서 측정. 차량의 understeer / oversteer 경향성 정량화.</p>
+        $$ K_{us} \;=\; \dfrac{\delta_{ss} - L/R}{a_y} $$
+        <p style="font-size: 13px; color: var(--ink-muted);">$L$ = wheelbase, $R$ = 코너 반경 (50 m), $a_y$ = 횡가속도 (steady-state)</p>
+        <table class="data">
+          <thead><tr><th>키</th><th>정의</th><th>단위</th><th class="num">임계 (within)</th></tr></thead>
+          <tbody>
+            <tr><td class="k">understeerGradient</td><td>$K_{us}$</td><td>rad/(m/s²)</td><td class="num red">0.003 ± 80%</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">$K_{us} &gt; 0$ understeer (안전) · $&lt; 0$ oversteer (위험). <strong>'within' 채점</strong> — 너무 크거나 너무 작아도 감점.</p>
       </div>
 
       <!-- kpi_braking -->
