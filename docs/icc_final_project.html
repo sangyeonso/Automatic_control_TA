@@ -1049,7 +1049,7 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
         <span class="problem-num">Section 03 · Controller Design</span>
       </div>
       <h2 class="problem-title">제어 설계 — 무엇을 만드나</h2>
-      <p class="problem-sub">자동제어 강의에 없는 차량 약어 4개, ctrl_*.m 4 함수, PID 출발점 골격.</p>
+      <p class="problem-sub">자동제어 강의에 없는 차량 약어 4개, ctrl_*.m 4 함수, 데이터 흐름.</p>
 
       <!-- Plant model figure -->
       <figure style="margin: 24px 0 32px; padding: 20px; background: var(--bg-card); border: 1px solid var(--bg-soft); border-radius: 8px;">
@@ -1134,58 +1134,9 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
         </tbody>
       </table>
 
-      <!-- Part (c) 각 제어기 설계 출발점 -->
+      <!-- Part (c) 제어 블록도 — 4 함수 데이터 흐름 -->
       <div class="part-header">
         <span class="part-tag">Part (c)</span>
-        <h3 class="part-title">각 제어기 설계 출발점 <em>— 어떻게 시작할 것인가</em></h3>
-      </div>
-
-      <div class="step">
-        <span class="step-label">Step 01</span>
-        <span class="step-title">ctrl_lateral · AFS + ESC</span>
-        <p><strong>한 줄</strong> — yaw rate 를 따라가게 (AFS) + 옆으로 미끄러지면 잡아주게 (ESC).</p>
-        <ol>
-          <li><strong>목표 yaw rate 계산</strong>: $\; r_{\text{ref}} = v_x\,\delta_{\text{driver}} / (L + K_{us}\,v_x^{\,2})$</li>
-          <li><strong>AFS</strong>: 오차 $r_{\text{ref}} - r$ 에 PID → 보조 조향각.</li>
-          <li><strong>ESC</strong>: $|\beta| > 3°$ 일 때만 반대 방향 yaw moment 인가.</li>
-        </ol>
-      </div>
-
-      <div class="step">
-        <span class="step-label">Step 02</span>
-        <span class="step-title">ctrl_longitudinal · 속도 + ABS</span>
-        <p><strong>한 줄</strong> — 목표 속도 따라가게 (PI) + 휠이 잠기지 않게 (ABS).</p>
-        <ol>
-          <li><strong>속도 PI</strong>: $F_x = K_p (v_{xRef} - v_x) + K_i \!\int\!\!\cdots$</li>
-          <li><strong>ABS</strong>: 휠 slip $\kappa$ 가 $-0.12$ 근방에 머무르도록 휠별 brake torque 조절.</li>
-        </ol>
-      </div>
-
-      <div class="step">
-        <span class="step-label">Step 03</span>
-        <span class="step-title">ctrl_vertical · CDC</span>
-        <p><strong>한 줄</strong> — 4 휠 감쇠 계수를 실시간으로 골라 차체 진동 줄이기 (Skyhook).</p>
-        <ol>
-          <li>각 휠 body 속도 $\dot z_s$ 와 상대 속도 $\dot z_{\text{rel}}$ 의 부호 비교.</li>
-          <li>부호 같으면 <code class="inline">cMax</code>, 다르면 <code class="inline">cMin</code>.</li>
-        </ol>
-      </div>
-
-      <div class="step">
-        <span class="step-label">Step 04</span>
-        <span class="step-title">ctrl_coordinator · Allocation</span>
-        <p><strong>한 줄</strong> — 3 개 ctrl 의 출력을 실제 actuator 명령으로 변환.</p>
-        <ol>
-          <li><strong>조향</strong>: AFS 그대로 통과 + saturation.</li>
-          <li><strong>ESC Mz → 4륜 brake 차동</strong>: track 반거리로 나눠 좌우 차동. 전·후 60:40 표준.</li>
-          <li><strong>종방향 brake</strong>: 4륜 분배 (<code class="inline">lonCmd.Fx_total &lt; 0</code> 일 때).</li>
-          <li><strong>감쇠</strong>: ctrl_vertical 결과 그대로 전달.</li>
-        </ol>
-      </div>
-
-      <!-- Part (d) 제어 블록도 — 4 함수 데이터 흐름 -->
-      <div class="part-header">
-        <span class="part-tag">Part (d)</span>
         <h3 class="part-title">제어 블록도 <em>— 4 함수 데이터 흐름</em></h3>
       </div>
 
