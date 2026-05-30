@@ -1131,6 +1131,14 @@ git push origin main</pre>
           <li><strong>saturation</strong>: <code class="inline">|δ_AFS| ≤ MAX_STEER_ANGLE</code>.</li>
         </ul>
         <p class="hint">PID 가 출발점. 여유 있으면 bicycle state-space + LQR 로 확장 (가점 +2).</p>
+
+        <p><strong>→ KPI 영향</strong></p>
+        <ul>
+          <li><strong>A3 yawRateOvershoot / riseTime / settling (12pt)</strong> — yaw rate 추종 게인이 직접 결정. Q<sub>r</sub> ↑ → rise 빨라지지만 overshoot 위험. 너무 빠른 응답은 OFF baseline 보다 OS 가 커져 점수 0 위험.</li>
+          <li><strong>A1 / A4 / A7 / D1 sideSlipMax (23pt)</strong> — ESC β-limiter (K<sub>β</sub>, β<sub>th</sub>) 가 결정적. β 임계 낮출수록 개입 빨라지지만 A4 K<sub>us</sub> 추적 오차 ↑.</li>
+          <li><strong>A1 / A7 / D1 LTR_max (14pt)</strong> — yaw rate 추종 정확도 + ESC 차동 brake 분배가 transient roll moment 감소.</li>
+          <li><strong>A4 understeerGradient (5pt)</strong> — 정상상태 r<sub>ref</sub> 계산식 정확도 + steady-state error 가 핵심.</li>
+        </ul>
       </div>
 
       <div class="step">
@@ -1147,6 +1155,13 @@ git push origin main</pre>
         <ul>
           <li><strong>저크 제한</strong>: 힘 변화율 $|dF_x/dt|$ 을 <code class="inline">LIM.MAX_JERK</code> 안으로.</li>
           <li><strong>가속 한계</strong>: $|F_x| \le m \cdot a_{x,\max}$.</li>
+        </ul>
+
+        <p><strong>→ KPI 영향</strong></p>
+        <ul>
+          <li><strong>B1 absSlipRMS (5pt)</strong> — ABS 의 핵심 직접 측정값. 각 휠 |κ| 가 κ<sub>ref</sub> ≈ 0.12 근방에 유지되면 RMS ≤ 0.10 충족. PI 만 잘 구현해도 만점 가능.</li>
+          <li><strong>B1 stoppingDistance (5pt)</strong> — 시나리오가 강한 brake 를 직접 인가하므로 ABS 의 brake release 가 길이를 좌우. κ<sub>ref</sub> 를 -0.10~-0.15 사이에서 선택 — 너무 작으면 안 멈춤, 너무 크면 lock. peak μ 활용 시 MFDD 가 μg 에 근접해야 짧아짐.</li>
+          <li><strong>D1 (간접)</strong> — D1 도 braking 포함하므로 ABS 가 작동 — 단, cornering 중이라 brake release 가 lateral grip 보존에 도움 (sideslip 안정).</li>
         </ul>
       </div>
 
@@ -1166,6 +1181,13 @@ git push origin main</pre>
           <li><strong>빈도 분리</strong>: body bounce (1–2 Hz) 와 wheel hop (10–15 Hz) 는 다른 전략 필요 — Hybrid (Skyhook + Groundhook) 권장.</li>
           <li><strong>안티롤 보상</strong>: 횡가속도 $a_y$, roll 각도 $\phi$ 에 비례해 좌우 휠 감쇠 차등 (외측 ↑, 내측 ↓).</li>
           <li><strong>범위 제한</strong>: <code class="inline">CTRL.VER.cMin ≤ c ≤ CTRL.VER.cMax</code>.</li>
+        </ul>
+
+        <p><strong>→ KPI 영향</strong></p>
+        <ul>
+          <li><strong>수치 P1 KPI 직접 영향 X</strong> — 정량 70 점에 직접 포함되지 않음. 그러나 보고서 (정성 30 점) 의 ride comfort / handling 평가에 핵심.</li>
+          <li><strong>가점 C1 / C2 (+2pt)</strong> — Single Bump / Sine Sweep 시나리오에서 a<sub>w,rms</sub> (ISO 2631 가중 RMS) 또는 peak 가속 감소 시 인정.</li>
+          <li><strong>간접 LTR 효과</strong> — anti-roll 보상이 들어가면 A1 / A7 / D1 의 transient LTR 약간 감소 가능. 단 주효과는 ESC.</li>
         </ul>
       </div>
 
@@ -1188,6 +1210,169 @@ git push origin main</pre>
           <li><strong>마찰원 제약</strong>: 종 + 횡 동시 인가 시 $\sqrt{F_x^2 + F_y^2} \le \mu F_z$ 위반 검사, 위반 시 scale down. <strong>가점 +3</strong>.</li>
           <li><strong>WLS allocation</strong>: simple split 대신 weighted least squares 로 4륜 토크 분배 — <strong>가점 +3</strong>.</li>
         </ul>
+
+        <p><strong>→ KPI 영향</strong></p>
+        <ul>
+          <li><strong>가점 마찰원 (+3pt)</strong> — 검사 + scale-down 구현 시 직접 가산.</li>
+          <li><strong>D1 (cornering + braking) 안정성</strong> — 마찰원 scale 이 작동하면 종 brake 가 횡 grip 침범 방지 → sideslip / LTR 폭주 방지.</li>
+          <li><strong>B1 stoppingDistance 간접</strong> — a<sub>max</sub> 마진 (예: 0.95·μg) 이 너무 보수적이면 brake authority 가 깎여 stopping 길어짐. cornering 없는 직진 제동 시 마진 완화 고려.</li>
+          <li><strong>모든 시나리오 LTR</strong> — Mz 의 4륜 분배 비율 (전:후) 이 transient roll 에 영향. 60:40 표준이 균형점.</li>
+        </ul>
+      </div>
+
+      <!-- Part (d) 설계 전략 — KPI 회복 우선순위 + Trade-off -->
+      <div class="part-header">
+        <span class="part-tag">Part (d)</span>
+        <h3 class="part-title">설계 전략 <em>— 점수 우선순위와 Trade-off</em></h3>
+      </div>
+
+      <p class="problem-sub" style="margin-bottom: 14px;">한 번에 모두 잘 만들기는 어렵다. 영향력 큰 함수부터 작업하고, 시나리오 간 trade-off 를 의식적으로 선택.</p>
+
+      <div class="step">
+        <span class="step-label">전략 1</span>
+        <span class="step-title">구현 우선순위 <em>— 점수 기댓값 기준</em></span>
+        <table class="data" style="margin-top: 10px;">
+          <thead>
+            <tr>
+              <th>순위</th>
+              <th>함수</th>
+              <th>영향 KPI</th>
+              <th class="num">최대 점수</th>
+              <th>난이도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="k">1</td>
+              <td class="k">ctrl_lateral</td>
+              <td>A3 + A1 + A4 + A7 + D1 횡 KPI 전부</td>
+              <td class="num green">~55</td>
+              <td>중 — bicycle 모델만 알면 PID 시작 가능</td>
+            </tr>
+            <tr>
+              <td class="k">2</td>
+              <td class="k">ctrl_longitudinal</td>
+              <td>B1 absSlipRMS (+ stoppingDistance 일부)</td>
+              <td class="num green">~5–10</td>
+              <td>하 — 휠별 PI 1개</td>
+            </tr>
+            <tr>
+              <td class="k">3</td>
+              <td class="k">ctrl_coordinator</td>
+              <td>가점 마찰원 + D1 안정성</td>
+              <td class="num amber">+3 (가점)</td>
+              <td>하 — 1줄 조건문</td>
+            </tr>
+            <tr>
+              <td class="k">4</td>
+              <td class="k">ctrl_vertical</td>
+              <td>보고서 + 가점 C1/C2</td>
+              <td class="num amber">+2 (가점)</td>
+              <td>중 — Skyhook 알고리즘 이해</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="hint" style="margin-top: 12px;"><strong>권장 순서</strong> — 처음 1주는 ctrl_lateral 만. 점수 50+ 도달 확인 후 longitudinal/coordinator. vertical 은 마지막.</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">전략 2</span>
+        <span class="step-title">Trade-off 매트릭스 <em>— 한 곳 좋아지면 다른 곳 나빠진다</em></span>
+        <table class="data" style="margin-top: 10px;">
+          <thead>
+            <tr>
+              <th>설계 결정</th>
+              <th>좋아지는 KPI</th>
+              <th>나빠지는 KPI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>강한 ESC β-limiter (K<sub>β</sub> ↑, β<sub>th</sub> ↓)</td>
+              <td>A1 / A7 / D1 sideSlip</td>
+              <td>A4 K<sub>us</sub> tracking, AFS 와 conflict</td>
+            </tr>
+            <tr>
+              <td>공격적 LQR Q<sub>r</sub> (yaw rate weight)</td>
+              <td>A3 riseTime / settling</td>
+              <td>A3 overshoot ↑ (OFF baseline 통과 위험)</td>
+            </tr>
+            <tr>
+              <td>Reference shaping (yaw rate LPF, τ ↑)</td>
+              <td>A3 overshoot</td>
+              <td>A1 / D1 LTR ↑ (response 지연)</td>
+            </tr>
+            <tr>
+              <td>공격적 ABS κ<sub>ref</sub> = -0.15</td>
+              <td>B1 stoppingDistance (μ peak 활용)</td>
+              <td>B1 absSlipRMS ↑</td>
+            </tr>
+            <tr>
+              <td>마찰원 a<sub>max</sub> 마진 확대 (1.0·μg)</td>
+              <td>B1 brake authority</td>
+              <td>D1 cornering 안정성 ↓</td>
+            </tr>
+            <tr>
+              <td>4륜 brake 전축 편향 (70:30)</td>
+              <td>안정성 (under-steer 경향)</td>
+              <td>LTR (전축 하중 ↑)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="hint" style="margin-top: 12px;"><strong>해석</strong> — 6 시나리오 점수 합계가 최대인 동작점을 찾는 게 목표. 1 시나리오에 over-fitting 하면 다른 시나리오 폭주.</p>
+      </div>
+
+      <div class="step">
+        <span class="step-label">전략 3</span>
+        <span class="step-title">5 대 함정 <em>— 0 점 위험을 만드는 흔한 실수</em></span>
+        <ol>
+          <li><strong>OFF baseline 미달</strong> — 채점식이 <code class="inline">val_on &gt;= val_off</code> 면 즉시 0. 컨트롤러가 자연 응답보다 나빠지면 점수 무. 약하게 시작해 점진적으로 강화 권장.</li>
+          <li><strong>Anti-windup 누락</strong> — LQI / PI 적분기 폭주 시 step input 에서 huge overshoot. <code class="inline">clip</code> + back-calc 둘 다 필요. <code class="inline">ctrlState.zInt = max(-z_max, min(z_max, ...))</code>.</li>
+          <li><strong>Saturation 무시</strong> — AFS ±5° / brake ±MAX_BRAKE_TRQ 한계 무시한 게인. saturation 발생 시 적분기 끄거나 (back-calc) tanh soft sat 사용.</li>
+          <li><strong>시나리오 over-fitting</strong> — A3 step 에 최적화 → A1 DLC LTR 폭주. 매 변경 후 6 시나리오 모두 grade.m 으로 검증.</li>
+          <li><strong>참조 모델 오류</strong> — bicycle steady-state 식 $r_{ref} = v_x\delta/(L + K_{us}v_x^2)$ 의 파라미터 (L, K<sub>us</sub>) 가 plant 와 일치하지 않으면 tracking error 가 항상 잔류. <code class="inline">veh_set.m</code> 의 값 확인.</li>
+        </ol>
+      </div>
+
+      <div class="step">
+        <span class="step-label">전략 4</span>
+        <span class="step-title">제어 블록도 <em>— 4 함수 데이터 흐름</em></span>
+        <pre style="background: var(--bg-soft); padding: 16px; border-radius: 6px; font-family: var(--font-mono); font-size: 13px; line-height: 1.7; overflow-x: auto; margin: 12px 0; border-left: 3px solid var(--accent);">
+   ┌─────────────────┐
+   │ scenario inputs │  δ_driver, brake_cmd, vxRef
+   └────────┬────────┘
+            │
+            ▼
+   ┌────────────────────────────────────────────────┐
+   │            run_icc_scenario.m (loop)            │
+   │                                                  │
+   │  yawRateRef = calc_ref_yaw_rate(vx, δ_drv, VEH)│
+   │       │                                          │
+   │       ▼                                          │
+   │  ┌──────────────┐    ┌──────────────────┐      │
+   │  │ ctrl_lateral │    │ctrl_longitudinal │      │
+   │  │  AFS + ESC   │    │  vx PI + ABS     │      │
+   │  └──────┬───────┘    └────────┬─────────┘      │
+   │         │ latCmd               │ lonCmd         │
+   │         │ (δ_AFS, Mz)          │ (Fx, absMod)   │
+   │         ▼                      ▼                │
+   │   ┌──────────────────────────────────┐         │
+   │   │       ctrl_coordinator           │         │
+   │   │  Mz → 4륜 brake 차동            │         │
+   │   │  + Fx → 종 brake                │         │
+   │   │  + 마찰원 scale                  │         │
+   │   └──────────────┬───────────────────┘         │
+   │                  │ actCmd                       │
+   │                  ▼                              │
+   │   ┌──────────────────┐  ┌──────────────────┐  │
+   │   │ ctrl_vertical    │  │   plant_step      │  │
+   │   │  Skyhook (4륜)   │─▶│   14-DOF 차량     │  │
+   │   └──────────────────┘  └──────────────────┘  │
+   │                                  │              │
+   │                                  ▼              │
+   │                          plantState (다음 step)│
+   └────────────────────────────────────────────────┘</pre>
+        <p class="hint"><strong>핵심</strong> — 4 함수의 출력은 각각 독립이지만 <code class="inline">ctrl_coordinator</code> 에서 합쳐진다. 출력 필드명 (<code class="inline">latCmd.steerAngle</code>, <code class="inline">latCmd.yawMoment</code>, <code class="inline">lonCmd.Fx_total</code>, <code class="inline">verCmd</code>) 을 starter 와 동일하게 유지.</p>
       </div>
 
       <div class="problem-divider">end of section 03</div>
