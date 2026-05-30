@@ -851,8 +851,9 @@ mjx-container[display="true"] { margin: 12px 0 !important; }
           <li>강의 repo 우측 상단 <strong>“Use this template”</strong> → 본인 GitHub 계정에 <code class="inline">integrated-chassis-control-&lt;학번&gt;</code> 생성</li>
           <li>본인 PC 로 clone:</li>
         </ol>
-<pre class="code"><span class="c"># PowerShell</span>
-git clone https://github.com/&lt;본인&gt;/integrated-chassis-control-&lt;학번&gt;.git
+<pre class="code"><span class="c">% MATLAB Command Window — 받고 싶은 부모 폴더로 이동 후 실행</span>
+cd(<span class="b">'C:\Users\&lt;본인&gt;\Desktop'</span>)   <span class="c">% 본인 위치로 변경</span>
+!git clone https://github.com/&lt;본인&gt;/integrated-chassis-control-&lt;학번&gt;.git
 cd integrated-chassis-control-&lt;학번&gt;</pre>
         <p class="hint">GitHub Classroom 은 2026-05 부로 신규 사용 중단 — 학생이 직접 fork.</p>
       </div>
@@ -889,12 +890,11 @@ cd icc-project
       <div class="step">
         <span class="step-label">Step 04 · COMMIT &amp; PUSH</span>
         <span class="step-title">grade_report.json 포함해서 push</span>
-<pre class="code">git add icc-project/scripts/control/ctrl_*.m \
-        icc-project/scripts/student_info.m \
-        icc-project/grade_report.json \
-        icc-project/docs/report.md
-git commit -m <span class="b">"Submit final controllers"</span>
-git push origin main</pre>
+<pre class="code"><span class="c">% MATLAB Command Window (현재 폴더 = repo 루트)</span>
+!git add icc-project/scripts/control/ctrl_lateral.m icc-project/scripts/control/ctrl_longitudinal.m icc-project/scripts/control/ctrl_vertical.m icc-project/scripts/control/ctrl_coordinator.m
+!git add icc-project/scripts/student_info.m icc-project/grade_report.json icc-project/docs/report.md
+!git commit -m <span class="b">"Submit final controllers"</span>
+!git push origin main</pre>
       </div>
 
       <div class="step">
