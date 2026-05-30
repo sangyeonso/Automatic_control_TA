@@ -861,11 +861,11 @@ cd integrated-chassis-control-&lt;학번&gt;</pre>
         <span class="step-label">Step 02 · EDIT</span>
         <span class="step-title">ctrl_*.m 수정 (MATLAB / VS Code)</span>
         <p><strong>시작하기 전</strong> — starter 템플릿을 복사해서 비어있는 본인 작업 파일을 만든다:</p>
-<pre class="code"><span class="c"># PowerShell / bash (icc-project/ 안에서)</span>
-cp scripts/control/starter/ctrl_lateral_starter.m       scripts/control/ctrl_lateral.m
-cp scripts/control/starter/ctrl_longitudinal_starter.m  scripts/control/ctrl_longitudinal.m
-cp scripts/control/starter/ctrl_vertical_starter.m      scripts/control/ctrl_vertical.m
-cp scripts/control/starter/ctrl_coordinator_starter.m   scripts/control/ctrl_coordinator.m</pre>
+<pre class="code"><span class="c">% MATLAB 명령창에서 (현재 폴더 = icc-project/)</span>
+copyfile('scripts/control/starter/ctrl_lateral_starter.m',       'scripts/control/ctrl_lateral.m');
+copyfile('scripts/control/starter/ctrl_longitudinal_starter.m',  'scripts/control/ctrl_longitudinal.m');
+copyfile('scripts/control/starter/ctrl_vertical_starter.m',      'scripts/control/ctrl_vertical.m');
+copyfile('scripts/control/starter/ctrl_coordinator_starter.m',   'scripts/control/ctrl_coordinator.m');</pre>
         <p class="hint">starter 파일들은 함수 시그니처 + TODO 주석만 있는 골격이다. 이걸 본인 설계로 채워나간다.</p>
         <p style="margin-top: 18px;">수정 가능한 파일은 정해져 있다:</p>
         <ul>
