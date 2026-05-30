@@ -851,17 +851,25 @@ mjx-container[display="true"] { margin: 12px 0 !important; }
           <li>강의 repo 우측 상단 <strong>“Use this template”</strong> → 본인 GitHub 계정에 <code class="inline">integrated-chassis-control-&lt;학번&gt;</code> 생성</li>
           <li>본인 PC 로 clone:</li>
         </ol>
-<pre class="code"><span class="c">% MATLAB Command Window — 받고 싶은 부모 폴더로 이동 후 실행</span>
-cd(<span class="b">'C:\Users\&lt;본인&gt;\Desktop'</span>)   <span class="c">% 본인 위치로 변경</span>
+<pre class="code"><span class="c">% MATLAB Command Window — repo 받을 작업 폴더를 먼저 만들고 진입</span>
+<span class="c">% 예: 바탕화면에 ICC 라는 폴더를 만들고 그 안에 clone</span>
+mkdir(<span class="b">'C:\Users\&lt;본인&gt;\Desktop\ICC'</span>)   <span class="c">% 이미 있으면 skip</span>
+cd(<span class="b">'C:\Users\&lt;본인&gt;\Desktop\ICC'</span>)
 !git clone https://github.com/&lt;본인&gt;/integrated-chassis-control-&lt;학번&gt;.git
-cd integrated-chassis-control-&lt;학번&gt;</pre>
+cd integrated-chassis-control-&lt;학번&gt;
+pwd   <span class="c">% 확인 — C:\Users\&lt;본인&gt;\Desktop\ICC\integrated-chassis-control-&lt;학번&gt;</span></pre>
         <p class="hint">GitHub Classroom 은 2026-05 부로 신규 사용 중단 — 학생이 직접 fork.</p>
       </div>
 
       <div class="step">
         <span class="step-label">Step 02 · EDIT</span>
         <span class="step-title">ctrl_*.m 수정 (MATLAB / VS Code)</span>
-        <p><strong>시작하기 전</strong> — starter 템플릿을 복사해서 비어있는 본인 작업 파일을 만든다:</p>
+        <p><strong>시작하기 전</strong> — 먼저 작업 폴더 (<code class="inline">icc-project/</code>) 로 이동한다. Step 01 직후 본인 위치는 <code class="inline">integrated-chassis-control-&lt;학번&gt;/</code> 이므로 한 단계 더 들어가야 한다:</p>
+<pre class="code"><span class="c">% MATLAB Command Window — 현재 위치 확인 후 icc-project 로 진입</span>
+pwd   <span class="c">% 현재 폴더 출력 — 예) C:\Users\&lt;본인&gt;\Desktop\ICC\integrated-chassis-control-&lt;학번&gt;</span>
+cd icc-project
+pwd   <span class="c">% 확인 — 예) C:\Users\&lt;본인&gt;\Desktop\ICC\integrated-chassis-control-&lt;학번&gt;\icc-project</span></pre>
+        <p style="margin-top: 14px;">이제 starter 템플릿을 복사해서 비어있는 본인 작업 파일을 만든다:</p>
 <pre class="code"><span class="c">% MATLAB 명령창에서 (현재 폴더 = icc-project/)</span>
 copyfile('scripts/control/starter/ctrl_lateral_starter.m',       'scripts/control/ctrl_lateral.m');
 copyfile('scripts/control/starter/ctrl_longitudinal_starter.m',  'scripts/control/ctrl_longitudinal.m');
@@ -880,17 +888,22 @@ copyfile('scripts/control/starter/ctrl_coordinator_starter.m',   'scripts/contro
       <div class="step">
         <span class="step-label">Step 03 · GRADE</span>
         <span class="step-title">본인 PC 에서 grade.m 실행</span>
-<pre class="code"><span class="c">% MATLAB Command Window</span>
-cd icc-project
+<pre class="code"><span class="c">% MATLAB Command Window — 현재 폴더가 icc-project 인지 확인</span>
+pwd   <span class="c">% 끝이 ...\icc-project 여야 함</span>
+<span class="c">% 아니라면 cd 로 이동: cd icc-project   또는   cd ..\icc-project</span>
+
 <span class="k">run</span>(<span class="b">'scripts/grade.m'</span>)
-<span class="c">% → icc-project/grade_report.json 생성됨</span></pre>
+<span class="c">% → 같은 폴더에 grade_report.json 생성됨</span></pre>
         <p>이 단계가 본 과제의 <strong>채점 자체</strong>. GitHub Actions 는 MATLAB을 돌리지 않고 검증만 한다 (campus license 제약).</p>
       </div>
 
       <div class="step">
         <span class="step-label">Step 04 · COMMIT &amp; PUSH</span>
         <span class="step-title">grade_report.json 포함해서 push</span>
-<pre class="code"><span class="c">% MATLAB Command Window (현재 폴더 = repo 루트)</span>
+<pre class="code"><span class="c">% MATLAB Command Window — repo 루트로 이동 (icc-project 의 부모 폴더)</span>
+cd ..   <span class="c">% icc-project 에 있었다면 한 단계 위로</span>
+pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여야 함</span>
+
 !git add icc-project/scripts/control/ctrl_lateral.m icc-project/scripts/control/ctrl_longitudinal.m icc-project/scripts/control/ctrl_vertical.m icc-project/scripts/control/ctrl_coordinator.m
 !git add icc-project/scripts/student_info.m icc-project/grade_report.json icc-project/docs/report.md
 !git commit -m <span class="b">"Submit final controllers"</span>
