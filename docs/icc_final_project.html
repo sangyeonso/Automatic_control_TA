@@ -1489,7 +1489,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_yawrate_response -->
       <div class="step">
-        <span class="step-label">A3 · 12 pt</span>
         <span class="step-title">kpi_yawrate_response — Step 응답</span>
         <p>2차 시스템 표준 지표. 학부 자동제어에서 배운 그대로.</p>
         <table class="data">
@@ -1507,7 +1506,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_slip_angle -->
       <div class="step">
-        <span class="step-label">A1 · 6 pt &nbsp;·&nbsp; A4 · 5 pt &nbsp;·&nbsp; A7 · 8 pt &nbsp;·&nbsp; D1 · 4 pt</span>
         <span class="step-title">kpi_slip_angle — 사이드 슬립 폭주 방지</span>
         <p>차체 진행 방향과 속도 벡터의 각도. 차량이 옆으로 미끄러지는 정도. 폭주 시 드리프트 상태.</p>
         $$ \beta(t) \;=\; \arctan \dfrac{v_y(t)}{v_x(t)} $$
@@ -1533,7 +1531,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_load_transfer -->
       <div class="step">
-        <span class="step-label">A1 · 5 pt &nbsp;·&nbsp; A7 · 7 pt &nbsp;·&nbsp; D1 · 2 pt</span>
         <span class="step-title">kpi_load_transfer — 좌우 휠 하중 비대칭</span>
         <p>코너링·제동 시 좌우 휠 수직 하중 차이. <strong>rollover 위험 지표</strong>.</p>
         $$ \text{LTR}(t) \;=\; \dfrac{F_{z,R}(t) - F_{z,L}(t)}{F_{z,R}(t) + F_{z,L}(t)} $$
@@ -1557,7 +1554,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_understeer_gradient -->
       <div class="step">
-        <span class="step-label">A4 · 5 pt</span>
         <span class="step-title">kpi_understeer_gradient — 정상상태 조향 응답</span>
         <p>SS Circular (A4) 에서 측정. 차량의 understeer / oversteer 경향성 정량화.</p>
         $$ K_{us} \;=\; \dfrac{\delta_{ss} - L/R}{a_y} $$
@@ -1573,7 +1569,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_braking -->
       <div class="step">
-        <span class="step-label">B1 · 5 pt (stoppingDist)</span>
         <span class="step-title">kpi_braking — UN-R 13H 표준 제동</span>
         <p>UN Regulation 13H Annex 3 정의에 따른 MFDD (Mean Fully-Developed Deceleration):</p>
         $$ \text{MFDD} \;=\; \dfrac{(0.8\,v_0)^2}{25.92 \,\cdot\, (s_2 - s_1)} $$
@@ -1592,7 +1587,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_abs_slip -->
       <div class="step">
-        <span class="step-label">B1 · 5 pt</span>
         <span class="step-title">kpi_abs_slip — ABS 추종 RMS</span>
         <p>브레이크 작동 중 slip ratio 가 target ($\kappa_{\text{target}} = -0.12$) 으로부터 떨어진 RMS 오차.</p>
         $$ \text{err}_w(t) \;=\; \kappa_w(t) - \kappa_{\text{target}},\qquad \text{RMS}_w \;=\; \sqrt{\overline{\text{err}_w^{\,2}}} $$
@@ -1609,7 +1603,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_lateral_path_deviation -->
       <div class="step">
-        <span class="step-label">A1 · 4 pt &nbsp;·&nbsp; D1 · 2 pt</span>
         <span class="step-title">kpi_lateral_path_deviation — 경로 추종</span>
         <p>차량 궤적과 reference path 사이의 perpendicular 거리.</p>
         $$ d(t) \;=\; \min_{p \in \text{refPath}} \bigl\| (x_{\text{veh}}(t), y_{\text{veh}}(t)) - p \bigr\| $$
@@ -1627,7 +1620,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_tire_utilization -->
       <div class="step">
-        <span class="step-label">A7, D1 가점</span>
         <span class="step-title">kpi_tire_utilization — 마찰원 사용률</span>
         <p>종 + 횡 결합 시 saturation 정도. 1.0 에 가까울수록 미끄러짐 시작.</p>
         $$ u_i(t) \;=\; \dfrac{\sqrt{F_x^{\,2} + F_y^{\,2}}}{\mu_i \cdot F_{z,i}},\qquad i \in \{\text{FL, FR, RL, RR}\} $$
@@ -1644,7 +1636,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_sine_with_dwell -->
       <div class="step">
-        <span class="step-label">A5 가점 +3</span>
         <span class="step-title">kpi_sine_with_dwell — FMVSS 126 (ESC 표준)</span>
         <p>Sine 입력 + 0.5s dwell 후 yaw rate 감쇠율. ESC 효능의 글로벌 표준 (미국 시판 차량 의무).</p>
         $$ R_{1.0} \;=\; \dfrac{|r(\text{BOS}+1.0\,\text{s})|}{r_{\text{peak}}},\qquad R_{1.75} \;=\; \dfrac{|r(\text{BOS}+1.75\,\text{s})|}{r_{\text{peak}}} $$
@@ -1661,7 +1652,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_susp_travel -->
       <div class="step">
-        <span class="step-label">C1, C2 가점 +2</span>
         <span class="step-title">kpi_susp_travel — 서스펜션 변위</span>
         <p>4-corner 서스펜션 변위 — CDC 효능 측정.</p>
         $$ \text{peakPerCorner}_i \;=\; \max_t |z_{s,i}(t)|,\qquad i \in \{\text{FL, FR, RL, RR}\} $$
@@ -1670,7 +1660,6 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
 
       <!-- kpi_ride_iso2631 -->
       <div class="step">
-        <span class="step-label">C1, C2 가점 +2</span>
         <span class="step-title">kpi_ride_iso2631 — 승차감 (ISO 2631-1)</span>
         <p>ISO 2631-1 $W_k$ 가중 RMS 가속도 — 인체가 가장 민감한 4–8 Hz 강조.</p>
         $$ a_w(t) \;=\; W_k(s) \cdot a_z(t),\qquad a_{w,\text{rms}} \;=\; \sqrt{\overline{a_w^{\,2}}} $$
