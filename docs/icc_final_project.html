@@ -1349,123 +1349,82 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
         <span class="problem-num">Section 04 · KPI Reference</span>
       </div>
       <h2 class="problem-title">KPI 사전</h2>
-      <p class="problem-sub">차량 동역학 변수 5종, KPI 함수 8종 (수식 포함), 시나리오 매핑.</p>
+      <p class="problem-sub">6 시나리오 (상위) → 11 KPI 함수 (중위) → 핵심 5 변수 (하위) 구조로 정리.</p>
 
-      <!-- ============ Part (a) — 5 core variables ============ -->
+      <!-- ============ Part (a) — Scenario ↔ KPI mapping ============ -->
       <div class="part-header">
         <span class="part-tag">Part (a)</span>
-        <h3 class="part-title">핵심 5 변수 <em>— r, β, κ, K<sub>us</sub>, LTR</em></h3>
+        <h3 class="part-title">시나리오 ↔ KPI 매핑 <em>— 한눈에</em></h3>
       </div>
 
-      <!-- yaw rate -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">yaw rate · $r$, $\dot\psi$</h3>
-          <div class="card-meta"><span>rad/s</span><span>핸들링 응답</span></div>
-        </div>
-        <p>차량이 수직축 (z) 기준 회전하는 각속도. <strong>부호 컨벤션</strong>: 위에서 봤을 때 반시계 (+).</p>
-        <div class="eq-banner">
-          $r \;=\; \dot\psi,\qquad r_{\text{ref}} \;=\; \dfrac{v_x\,\delta}{L + K_{us}\,v_x^{\,2}}$
-        </div>
-        <table class="data">
-          <thead><tr><th>참고값</th><th>범위</th></tr></thead>
-          <tbody>
-            <tr><td class="green">일반 주행</td><td class="num">0.1 – 0.3 rad/s</td></tr>
-            <tr><td class="amber">급선회</td><td class="num">0.5 – 0.8 rad/s</td></tr>
-            <tr><td class="red">위험 임계</td><td class="num">&gt; 1.0 rad/s</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- 6 시나리오 시각 도식 -->
+      <figure style="margin: 16px 0 28px; padding: 16px; background: var(--bg-card); border: 1px solid var(--bg-soft); border-radius: 8px;">
+        <img src="images/scenarios_6.png"
+             alt="6 시나리오 도식 — A3 Step Steer / A1 DLC / A4 SS Circular / A7 Brake-in-Turn / B1 Straight Brake / D1 DLC+Brake"
+             style="display: block; margin: 0 auto; max-width: 100%; height: auto;">
+        <figcaption style="text-align: center; margin-top: 12px; font-family: var(--font-serif); font-style: italic; color: var(--ink-muted); font-size: 13px; line-height: 1.5;">
+          6 평가 시나리오 — 각 시나리오의 ISO 표준 / 시험 조건 / 핵심 임계값.
+          <br>
+          <span style="font-family: var(--font-mono); font-size: 11px;">
+            A3 Step Steer (ISO 7401, 12 pt) · A1 ISO 3888 DLC (15 pt) · A4 SS Circular (ISO 4138, 10 pt)
+            <br>
+            A7 Brake-in-Turn (ISO 7975, 15 pt) · B1 Straight Brake (ISO 21994 / UN-R 13H, 10 pt) · D1 DLC + Brake (Integration Test, 8 pt)
+          </span>
+        </figcaption>
+      </figure>
 
-      <!-- slip angle -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">slip angle (사이드 슬립) · $\beta$</h3>
-          <div class="card-meta"><span>rad (출력 deg)</span><span>안정성</span></div>
-        </div>
-        <p>차량 진행속도 벡터와 차체 종축 사이의 각도. <strong>“차가 옆으로 미끄러지는 정도”</strong>.</p>
-        <div class="eq-banner">
-          $\beta \;=\; \arctan\!\Bigl(\dfrac{v_y}{v_x}\Bigr) \;\approx\; \dfrac{v_y}{v_x}$
-        </div>
-        <p><strong>왜 yaw rate 만으론 부족한가</strong>: $r$ 만 잡으면 차가 회전하지 않고 옆으로 미끄러질 수 있음 (드리프트). $\beta$ 는 진행방향 이탈을 측정.</p>
-        <table class="data">
-          <thead><tr><th>임계</th><th class="num">값</th><th>의미</th></tr></thead>
-          <tbody>
-            <tr><td class="green">정상</td><td class="num">$\beta &lt; 2°$</td><td>제어 가능</td></tr>
-            <tr><td class="amber">주의</td><td class="num">$2° \le \beta \le 4°$</td><td>운전자 보정 가능</td></tr>
-            <tr><td class="red">위험</td><td class="num">$\beta &gt; 4°$</td><td>숙련자만 회복</td></tr>
-            <tr><td class="red">제어불능</td><td class="num">$\beta &gt; 7°$</td><td>일반인 회복 불가</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <table class="data">
+        <thead>
+          <tr>
+            <th>시나리오</th>
+            <th>이름</th>
+            <th>사용 KPI</th>
+            <th>핵심 임계</th>
+            <th class="num">배점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="k">A3</td><td>Step Steer</td>
+            <td class="k">yawrate_response</td>
+            <td>OS ≤ 10%, rise ≤ 0.3s, settle ≤ 0.8s</td>
+            <td class="num green">12</td>
+          </tr>
+          <tr>
+            <td class="k">A1</td><td>ISO 3888 DLC</td>
+            <td class="k">β, LTR, path_dev</td>
+            <td>β ≤ 3°, LTR ≤ 0.6, dev ≤ 0.7m</td>
+            <td class="num green">15</td>
+          </tr>
+          <tr>
+            <td class="k">A4</td><td>SS Circular</td>
+            <td class="k">understeerGradient, β</td>
+            <td>K<sub>us</sub> = 0.003 ± 80%, β ≤ 2°</td>
+            <td class="num green">10</td>
+          </tr>
+          <tr>
+            <td class="k">A7</td><td>Brake-in-Turn</td>
+            <td class="k">β, LTR</td>
+            <td>β ≤ 5°, LTR ≤ 0.7</td>
+            <td class="num green">15</td>
+          </tr>
+          <tr>
+            <td class="k">B1</td><td>Straight Brake</td>
+            <td class="k">braking, abs_slip</td>
+            <td>stopping ≤ 40m, RMS ≤ 0.10</td>
+            <td class="num green">10</td>
+          </tr>
+          <tr>
+            <td class="k">D1</td><td>DLC + Brake</td>
+            <td class="k">β, LTR, path_dev</td>
+            <td>β ≤ 4°, LTR ≤ 0.6, dev ≤ 1.0m</td>
+            <td class="num green">8</td>
+          </tr>
+        </tbody>
+      </table>
 
-      <!-- slip ratio -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">slip ratio · $\kappa$</h3>
-          <div class="card-meta"><span>무차원</span><span>가속/제동</span></div>
-        </div>
-        <p>휠 회전속도와 차량 속도의 비율 차이.</p>
-        <div class="eq-banner">
-          가속: $\kappa = \dfrac{R_w\,\omega - v_x}{R_w\,\omega}$ &nbsp;&nbsp;·&nbsp;&nbsp; 제동: $\kappa = \dfrac{R_w\,\omega - v_x}{v_x}$
-        </div>
-        <p><strong>부호 컨벤션</strong>: 가속 (+) · 제동 (−). ABS target $\kappa = -0.12$ (제동, $\mu_{\text{peak}}$).</p>
-        <table class="data">
-          <thead><tr><th>영역</th><th class="num">값</th><th>의미</th></tr></thead>
-          <tbody>
-            <tr><td class="green">미마찰</td><td class="num">$\kappa \approx 0$</td><td>pure rolling</td></tr>
-            <tr><td class="green">$\mu_{\text{peak}}$</td><td class="num">$|\kappa| \approx 0.10 – 0.15$</td><td>ABS 목표</td></tr>
-            <tr><td class="amber">미끄러짐</td><td class="num">$|\kappa| &gt; 0.15$</td><td>$\mu$ 감소</td></tr>
-            <tr><td class="red">완전 잠김 / 헛돌기</td><td class="num">$|\kappa| = 1.0$</td><td>제어 불가</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- understeer gradient -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">understeer gradient · $K_{us}$</h3>
-          <div class="card-meta"><span>rad·s²/m</span><span>정상상태 응답</span></div>
-        </div>
-        <p>횡가속도 증가에 따라 운전자가 추가로 돌려야 하는 조향각의 비율.</p>
-        <div class="eq-banner">
-          $K_{us} \;=\; \dfrac{W_f}{C_f} \;-\; \dfrac{W_r}{C_r}$
-          &nbsp;&nbsp;·&nbsp;&nbsp; $W = \text{축 하중}, \; C = \text{코너링 강성}$
-        </div>
-        <table class="data">
-          <thead><tr><th>부호</th><th>의미</th><th>예</th></tr></thead>
-          <tbody>
-            <tr><td class="green">$K_{us} &gt; 0$</td><td>understeer (안전)</td><td>양산차 기본</td></tr>
-            <tr><td class="muted">$K_{us} = 0$</td><td>neutral steer</td><td>—</td></tr>
-            <tr><td class="red">$K_{us} &lt; 0$</td><td>oversteer (위험)</td><td>F1 / 드리프트</td></tr>
-            <tr><td class="amber">A4 target</td><td>BMW_5 ± 80%</td><td><b>0.003</b></td></tr>
-          </tbody>
-        </table>
-        <p class="hint">A4 에서 정상상태 도달 못하면 부호 자체가 틀린 값 (e.g. staff −2547) → 0점.</p>
-      </div>
-
-      <!-- LTR -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">load transfer ratio · LTR</h3>
-          <div class="card-meta"><span>무차원</span><span>전복 지표</span></div>
-        </div>
-        <p>좌우 휠 사이의 수직 하중 차이 비율. <strong>부호</strong>: 우측 하중 큼 (+).</p>
-        <div class="eq-banner">
-          $\text{LTR} \;=\; \dfrac{F_{zR} - F_{zL}}{F_{zR} + F_{zL}} \quad\in\;[-1,\, +1]$
-        </div>
-        <table class="data">
-          <thead><tr><th>임계</th><th class="num">값</th><th>상태</th></tr></thead>
-          <tbody>
-            <tr><td class="green">정상</td><td class="num">$|\text{LTR}| &lt; 0.3$</td><td>일상 코너링</td></tr>
-            <tr><td class="amber">위험 (P1 임계)</td><td class="num">$|\text{LTR}| &gt; 0.6$</td><td>전복 마진 감소</td></tr>
-            <tr><td class="red">전복</td><td class="num">$|\text{LTR}| = 1.0$</td><td>한쪽 휠 완전 부상</td></tr>
-          </tbody>
-        </table>
-        <p class="hint">명세 P1 임계 0.6 = BMW_5 세단 기준. SUV 면 0.7–0.8.</p>
-      </div>
-
-      <!-- ============ Part (b) — 8 KPI functions ============ -->
+      <!-- ============ Part (c) — 5 core variables ============ -->
+      <!-- ============ Part (b) — 11 KPI functions ============ -->
       <div class="part-header">
         <span class="part-tag">Part (b)</span>
         <h3 class="part-title">11 KPI 함수 <em>— 수식 포함</em></h3>
@@ -1659,77 +1618,119 @@ pwd   <span class="c">% 끝이 ...\integrated-chassis-control-&lt;학번&gt; 여
         <p class="hint">aw_rms &lt; 0.315 = 안락, &gt; 0.8 = 불편.</p>
       </div>
 
-      <!-- ============ Part (c) — Scenario ↔ KPI mapping ============ -->
-      <div class="part-header">
+      <!-- ============ Part (c) — 5 core variables ============ -->
+      <div class="part-header" style="margin-top: 36px;">
         <span class="part-tag">Part (c)</span>
-        <h3 class="part-title">시나리오 ↔ KPI 매핑 <em>— 한눈에</em></h3>
+        <h3 class="part-title">핵심 5 변수 <em>— r, β, κ, K<sub>us</sub>, LTR</em></h3>
       </div>
 
-      <!-- 6 시나리오 시각 도식 -->
-      <figure style="margin: 16px 0 28px; padding: 16px; background: var(--bg-card); border: 1px solid var(--bg-soft); border-radius: 8px;">
-        <img src="images/scenarios_6.png"
-             alt="6 시나리오 도식 — A3 Step Steer / A1 DLC / A4 SS Circular / A7 Brake-in-Turn / B1 Straight Brake / D1 DLC+Brake"
-             style="display: block; margin: 0 auto; max-width: 100%; height: auto;">
-        <figcaption style="text-align: center; margin-top: 12px; font-family: var(--font-serif); font-style: italic; color: var(--ink-muted); font-size: 13px; line-height: 1.5;">
-          6 평가 시나리오 — 각 시나리오의 ISO 표준 / 시험 조건 / 핵심 임계값.
-          <br>
-          <span style="font-family: var(--font-mono); font-size: 11px;">
-            A3 Step Steer (ISO 7401, 12 pt) · A1 ISO 3888 DLC (15 pt) · A4 SS Circular (ISO 4138, 10 pt)
-            <br>
-            A7 Brake-in-Turn (ISO 7975, 15 pt) · B1 Straight Brake (ISO 21994 / UN-R 13H, 10 pt) · D1 DLC + Brake (Integration Test, 8 pt)
-          </span>
-        </figcaption>
-      </figure>
+      <!-- yaw rate -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">yaw rate · $r$, $\dot\psi$</h3>
+          <div class="card-meta"><span>rad/s</span><span>핸들링 응답</span></div>
+        </div>
+        <p>차량이 수직축 (z) 기준 회전하는 각속도. <strong>부호 컨벤션</strong>: 위에서 봤을 때 반시계 (+).</p>
+        <div class="eq-banner">
+          $r \;=\; \dot\psi,\qquad r_{\text{ref}} \;=\; \dfrac{v_x\,\delta}{L + K_{us}\,v_x^{\,2}}$
+        </div>
+        <table class="data">
+          <thead><tr><th>참고값</th><th>범위</th></tr></thead>
+          <tbody>
+            <tr><td class="green">일반 주행</td><td class="num">0.1 – 0.3 rad/s</td></tr>
+            <tr><td class="amber">급선회</td><td class="num">0.5 – 0.8 rad/s</td></tr>
+            <tr><td class="red">위험 임계</td><td class="num">&gt; 1.0 rad/s</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-      <table class="data">
-        <thead>
-          <tr>
-            <th>시나리오</th>
-            <th>이름</th>
-            <th>사용 KPI</th>
-            <th>핵심 임계</th>
-            <th class="num">배점</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="k">A3</td><td>Step Steer</td>
-            <td class="k">yawrate_response</td>
-            <td>OS ≤ 10%, rise ≤ 0.3s, settle ≤ 0.8s</td>
-            <td class="num green">12</td>
-          </tr>
-          <tr>
-            <td class="k">A1</td><td>ISO 3888 DLC</td>
-            <td class="k">β, LTR, path_dev</td>
-            <td>β ≤ 3°, LTR ≤ 0.6, dev ≤ 0.7m</td>
-            <td class="num green">15</td>
-          </tr>
-          <tr>
-            <td class="k">A4</td><td>SS Circular</td>
-            <td class="k">understeerGradient, β</td>
-            <td>K<sub>us</sub> = 0.003 ± 80%, β ≤ 2°</td>
-            <td class="num green">10</td>
-          </tr>
-          <tr>
-            <td class="k">A7</td><td>Brake-in-Turn</td>
-            <td class="k">β, LTR</td>
-            <td>β ≤ 5°, LTR ≤ 0.7</td>
-            <td class="num green">15</td>
-          </tr>
-          <tr>
-            <td class="k">B1</td><td>Straight Brake</td>
-            <td class="k">braking, abs_slip</td>
-            <td>stopping ≤ 40m, RMS ≤ 0.10</td>
-            <td class="num green">10</td>
-          </tr>
-          <tr>
-            <td class="k">D1</td><td>DLC + Brake</td>
-            <td class="k">β, LTR, path_dev</td>
-            <td>β ≤ 4°, LTR ≤ 0.6, dev ≤ 1.0m</td>
-            <td class="num green">8</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- slip angle -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">slip angle (사이드 슬립) · $\beta$</h3>
+          <div class="card-meta"><span>rad (출력 deg)</span><span>안정성</span></div>
+        </div>
+        <p>차량 진행속도 벡터와 차체 종축 사이의 각도. <strong>“차가 옆으로 미끄러지는 정도”</strong>.</p>
+        <div class="eq-banner">
+          $\beta \;=\; \arctan\!\Bigl(\dfrac{v_y}{v_x}\Bigr) \;\approx\; \dfrac{v_y}{v_x}$
+        </div>
+        <p><strong>왜 yaw rate 만으론 부족한가</strong>: $r$ 만 잡으면 차가 회전하지 않고 옆으로 미끄러질 수 있음 (드리프트). $\beta$ 는 진행방향 이탈을 측정.</p>
+        <table class="data">
+          <thead><tr><th>임계</th><th class="num">값</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td class="green">정상</td><td class="num">$\beta &lt; 2°$</td><td>제어 가능</td></tr>
+            <tr><td class="amber">주의</td><td class="num">$2° \le \beta \le 4°$</td><td>운전자 보정 가능</td></tr>
+            <tr><td class="red">위험</td><td class="num">$\beta &gt; 4°$</td><td>숙련자만 회복</td></tr>
+            <tr><td class="red">제어불능</td><td class="num">$\beta &gt; 7°$</td><td>일반인 회복 불가</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- slip ratio -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">slip ratio · $\kappa$</h3>
+          <div class="card-meta"><span>무차원</span><span>가속/제동</span></div>
+        </div>
+        <p>휠 회전속도와 차량 속도의 비율 차이.</p>
+        <div class="eq-banner">
+          가속: $\kappa = \dfrac{R_w\,\omega - v_x}{R_w\,\omega}$ &nbsp;&nbsp;·&nbsp;&nbsp; 제동: $\kappa = \dfrac{R_w\,\omega - v_x}{v_x}$
+        </div>
+        <p><strong>부호 컨벤션</strong>: 가속 (+) · 제동 (−). ABS target $\kappa = -0.12$ (제동, $\mu_{\text{peak}}$).</p>
+        <table class="data">
+          <thead><tr><th>영역</th><th class="num">값</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td class="green">미마찰</td><td class="num">$\kappa \approx 0$</td><td>pure rolling</td></tr>
+            <tr><td class="green">$\mu_{\text{peak}}$</td><td class="num">$|\kappa| \approx 0.10 – 0.15$</td><td>ABS 목표</td></tr>
+            <tr><td class="amber">미끄러짐</td><td class="num">$|\kappa| &gt; 0.15$</td><td>$\mu$ 감소</td></tr>
+            <tr><td class="red">완전 잠김 / 헛돌기</td><td class="num">$|\kappa| = 1.0$</td><td>제어 불가</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- understeer gradient -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">understeer gradient · $K_{us}$</h3>
+          <div class="card-meta"><span>rad·s²/m</span><span>정상상태 응답</span></div>
+        </div>
+        <p>횡가속도 증가에 따라 운전자가 추가로 돌려야 하는 조향각의 비율.</p>
+        <div class="eq-banner">
+          $K_{us} \;=\; \dfrac{W_f}{C_f} \;-\; \dfrac{W_r}{C_r}$
+          &nbsp;&nbsp;·&nbsp;&nbsp; $W = \text{축 하중}, \; C = \text{코너링 강성}$
+        </div>
+        <table class="data">
+          <thead><tr><th>부호</th><th>의미</th><th>예</th></tr></thead>
+          <tbody>
+            <tr><td class="green">$K_{us} &gt; 0$</td><td>understeer (안전)</td><td>양산차 기본</td></tr>
+            <tr><td class="muted">$K_{us} = 0$</td><td>neutral steer</td><td>—</td></tr>
+            <tr><td class="red">$K_{us} &lt; 0$</td><td>oversteer (위험)</td><td>F1 / 드리프트</td></tr>
+            <tr><td class="amber">A4 target</td><td>BMW_5 ± 80%</td><td><b>0.003</b></td></tr>
+          </tbody>
+        </table>
+        <p class="hint">A4 에서 정상상태 도달 못하면 부호 자체가 틀린 값 (e.g. staff −2547) → 0점.</p>
+      </div>
+
+      <!-- LTR -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">load transfer ratio · LTR</h3>
+          <div class="card-meta"><span>무차원</span><span>전복 지표</span></div>
+        </div>
+        <p>좌우 휠 사이의 수직 하중 차이 비율. <strong>부호</strong>: 우측 하중 큼 (+).</p>
+        <div class="eq-banner">
+          $\text{LTR} \;=\; \dfrac{F_{zR} - F_{zL}}{F_{zR} + F_{zL}} \quad\in\;[-1,\, +1]$
+        </div>
+        <table class="data">
+          <thead><tr><th>임계</th><th class="num">값</th><th>상태</th></tr></thead>
+          <tbody>
+            <tr><td class="green">정상</td><td class="num">$|\text{LTR}| &lt; 0.3$</td><td>일상 코너링</td></tr>
+            <tr><td class="amber">위험 (P1 임계)</td><td class="num">$|\text{LTR}| &gt; 0.6$</td><td>전복 마진 감소</td></tr>
+            <tr><td class="red">전복</td><td class="num">$|\text{LTR}| = 1.0$</td><td>한쪽 휠 완전 부상</td></tr>
+          </tbody>
+        </table>
+        <p class="hint">명세 P1 임계 0.6 = BMW_5 세단 기준. SUV 면 0.7–0.8.</p>
+      </div>
 
       <div class="part-header" style="margin-top: 36px;">
         <span class="part-tag" style="background: var(--accent-3);">Bonus</span>
